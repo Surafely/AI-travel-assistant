@@ -1,0 +1,23 @@
+{
+  "name": "ai-travel-knowledge-assistant",
+  "version": "1.0.0",
+  "description": "working on ai-travel-assistant",
+  "homepage": "https://github.com/Surafely/AI-travel-assistant#readme",
+  "bugs": {
+    "url": "https://github.com/Surafely/AI-travel-assistant/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Surafely/AI-travel-assistant.git"
+  },
+  "license": "ISC",
+  "author": "Surafel",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
