@@ -95,8 +95,5 @@
         "day": 2
       }
     ]
-  },
-  { "id": null, "name": "Test Trips", "duration": 10, "difficulty": "easy" },
-  { "id": 1, "name": "Test Trips", "duration": 10, "difficulty": "easy" },
-  { "id": 2, "name": "Test trips", "duration": 10, "difficulty": "easy" }
+  }
 ]
