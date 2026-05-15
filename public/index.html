@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Travel Knowledge Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <nav class="auth-bar" aria-label="Account">
+          <a href="#" class="btn-auth btn-auth--ghost">Log on</a>
+          <a href="#" class="btn-auth btn-auth--solid">Sign in</a>
+        </nav>
+        <div class="logo">
+          <span class="logo-icon" aria-hidden="true">✈</span>
+        </div>
+        <h1>AI Travel Knowledge Assistant</h1>
+        <p class="tagline">
+          Ask about destinations, visas, culture, and trip planning — powered by
+          your backend when you connect it.
+        </p>
+      </header>
+
+      <main class="chat" id="chat" aria-live="polite"></main>
+
+      <div class="composer">
+        <form class="composer-inner" id="form" autocomplete="off">
+          <label for="query" class="visually-hidden">Your question</label>
+          <textarea
+            id="query"
+            name="query"
+            rows="1"
+            placeholder="Where should I go in spring for hiking and good food?"
+            maxlength="2000"
+          ></textarea>
+          <button
+            type="submit"
+            class="btn-send"
+            id="send"
+            aria-label="Send message"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M22 2L11 13" />
+              <path d="M22 2L15 22L11 13L2 9L22 2Z" />
+            </svg>
+          </button>
+        </form>
+      </div>
+
+      <footer>
+        Frontend prototype — wire your API to replace demo replies.
+      </footer>
+    </div>
+
+    <script src="./app.js" defer></script>
+  </body>
+</html>
