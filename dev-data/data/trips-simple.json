@@ -1,5 +1,6 @@
 [
   {
+    "id": 0,
     "name": "Explore Tokyo",
     "duration": 5,
     "maxGroupSize": 12,
@@ -36,6 +37,7 @@
     ]
   },
   {
+    "id": 1,
     "name": "Paris City Escape",
     "duration": 4,
     "maxGroupSize": 10,
@@ -65,6 +67,7 @@
     ]
   },
   {
+    "id": 2,
     "name": "Bali Adventure Retreat",
     "duration": 7,
     "maxGroupSize": 15,
@@ -92,5 +95,8 @@
         "day": 2
       }
     ]
-  }
+  },
+  { "id": null, "name": "Test Trips", "duration": 10, "difficulty": "easy" },
+  { "id": 1, "name": "Test Trips", "duration": 10, "difficulty": "easy" },
+  { "id": 2, "name": "Test trips", "duration": 10, "difficulty": "easy" }
 ]
