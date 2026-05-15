@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Surafel Yigezu",
+    "email": "surafel@example.com",
+    "role": "admin",
+    "password": "test1234",
+    "passwordConfirm": "test1234",
+    "photo": "user-1.jpg"
+  },
+  {
+    "name": "John Carter",
+    "email": "john@example.com",
+    "role": "user",
+    "password": "test1234",
+    "passwordConfirm": "test1234",
+    "photo": "user-2.jpg"
+  },
+  {
+    "name": "Emma Watson",
+    "email": "emma@example.com",
+    "role": "guide",
+    "password": "test1234",
+    "passwordConfirm": "test1234",
+    "photo": "user-3.jpg"
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "review": "The Tokyo trip was amazing and very well organized!",
+    "rating": 5,
+    "createdAt": "2026-05-10T10:00:00.000Z"
+  },
+  {
+    "review": "Paris was beautiful, but the hotel could have been better.",
+    "rating": 4,
+    "createdAt": "2026-05-12T14:30:00.000Z"
+  },
+  {
+    "review": "Bali retreat exceeded my expectations. Highly recommended!",
+    "rating": 5,
+    "createdAt": "2026-05-14T09:15:00.000Z"
+  }
+]

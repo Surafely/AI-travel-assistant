@@ -1,0 +1,96 @@
+[
+  {
+    "name": "Explore Tokyo",
+    "duration": 5,
+    "maxGroupSize": 12,
+    "difficulty": "medium",
+    "ratingsAverage": 4.8,
+    "ratingsQuantity": 37,
+    "price": 1499,
+    "summary": "Experience the modern and traditional beauty of Tokyo.",
+    "description": "Visit Shibuya, Tokyo Tower, temples, sushi markets, and enjoy Japanese culture.",
+    "imageCover": "tokyo.jpg",
+    "images": ["tokyo-1.jpg", "tokyo-2.jpg", "tokyo-3.jpg"],
+    "startDates": ["2026-06-15T09:00:00.000Z", "2026-07-10T09:00:00.000Z"],
+    "startLocation": {
+      "type": "Point",
+      "coordinates": [139.6917, 35.6895],
+      "address": "Tokyo Station",
+      "description": "Tokyo, Japan"
+    },
+    "locations": [
+      {
+        "type": "Point",
+        "coordinates": [139.7006, 35.6894],
+        "address": "Shibuya Crossing",
+        "description": "Shibuya District",
+        "day": 1
+      },
+      {
+        "type": "Point",
+        "coordinates": [139.7454, 35.6586],
+        "address": "Tokyo Tower",
+        "description": "Tokyo Landmark",
+        "day": 2
+      }
+    ]
+  },
+  {
+    "name": "Paris City Escape",
+    "duration": 4,
+    "maxGroupSize": 10,
+    "difficulty": "easy",
+    "ratingsAverage": 4.7,
+    "ratingsQuantity": 24,
+    "price": 1299,
+    "summary": "Discover romance, art, and history in Paris.",
+    "description": "Visit the Eiffel Tower, Louvre Museum, cafes, and Seine River cruises.",
+    "imageCover": "paris.jpg",
+    "images": ["paris-1.jpg", "paris-2.jpg"],
+    "startDates": ["2026-08-01T09:00:00.000Z"],
+    "startLocation": {
+      "type": "Point",
+      "coordinates": [2.3522, 48.8566],
+      "address": "Charles de Gaulle Airport",
+      "description": "Paris, France"
+    },
+    "locations": [
+      {
+        "type": "Point",
+        "coordinates": [2.2945, 48.8584],
+        "address": "Eiffel Tower",
+        "description": "Paris Landmark",
+        "day": 1
+      }
+    ]
+  },
+  {
+    "name": "Bali Adventure Retreat",
+    "duration": 7,
+    "maxGroupSize": 15,
+    "difficulty": "difficult",
+    "ratingsAverage": 4.9,
+    "ratingsQuantity": 51,
+    "price": 1899,
+    "summary": "Relax and explore the tropical paradise of Bali.",
+    "description": "Enjoy beaches, waterfalls, temples, rice terraces, and island adventures.",
+    "imageCover": "bali.jpg",
+    "images": ["bali-1.jpg", "bali-2.jpg", "bali-3.jpg"],
+    "startDates": ["2026-09-05T09:00:00.000Z"],
+    "startLocation": {
+      "type": "Point",
+      "coordinates": [115.1889, -8.4095],
+      "address": "Ngurah Rai International Airport",
+      "description": "Bali, Indonesia"
+    },
+    "locations": [
+      {
+        "type": "Point",
+        "coordinates": [115.2606, -8.5069],
+        "address": "Ubud",
+        "description": "Rice Terraces",
+        "day": 2
+      }
+    ]
+  }
+]
