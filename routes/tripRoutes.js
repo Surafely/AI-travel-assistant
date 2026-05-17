@@ -2,6 +2,8 @@ const express = require('express');
 const tripController = require('../controllers/tripController');
 const router = express.Router();
 
+router.param('id', tripController.checkId);
+
 router
   .route('/')
   .get(tripController.getAllTrips)

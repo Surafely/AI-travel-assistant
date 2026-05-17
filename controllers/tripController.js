@@ -4,6 +4,17 @@ const trips = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/trips-simple.json`),
 );
 
+exports.checkId = (req, res, next, val) => {
+  console.log(`Trip ID is: ${val}`);
+
+  if (req.params.id > trips.length)
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  next();
+};
+
 exports.getAllTrips = (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -16,16 +27,9 @@ exports.getAllTrips = (req, res) => {
 };
 
 exports.getTrip = (req, res) => {
-  console.log(req.params);
+  //   console.log(req.params);
   const id = req.params.id * 1;
   const trip = trips.find((el) => el.id === id);
-
-  // if (id > trips.length)
-  if (!trip)
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
 
   res.status(200).json({
     status: 'success',
@@ -57,12 +61,6 @@ exports.createTrip = (req, res) => {
 };
 
 exports.updateTrip = (req, res) => {
-  if (req.params.id > trips.length)
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-
   res.status(200).json({
     status: 'success',
     data: {
@@ -72,12 +70,6 @@ exports.updateTrip = (req, res) => {
 };
 
 exports.deleteTrip = (req, res) => {
-  if (req.params.id > trips.length)
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-
   res.status(204).json({
     status: 'success',
     data: null,
