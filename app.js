@@ -1,17 +1,28 @@
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
 
 const app = express();
 
+// MIDDLEWARES
 app.use(express.json());
+app.use(morgan('dev'));
 
 const trips = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/trips-simple.json`),
 );
 
+app.use((req, res, next) => {
+  req.requestedTime = new Date().toISOString();
+
+  next();
+});
+
+//ROUTE HANDLERS
 const getAllTrips = (req, res) => {
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestedTime,
     results: trips.length,
     data: {
       trips,
@@ -94,6 +105,7 @@ const deleteTrip = (req, res) => {
 // app.delete('/api/v1/trips/:id', deleteTrip);
 // app.post('/api/v1/trips', createTrip);
 
+//ROUTES
 app.route('/api/v1/trips').get(getAllTrips).post(createTrip);
 
 app
@@ -102,6 +114,7 @@ app
   .patch(updateTrip)
   .delete(deleteTrip);
 
+//START SERVER
 const port = 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}...`);
