@@ -141,21 +141,17 @@ const deleteUser = (req, res) => {
 // app.post('/api/v1/trips', createTrip);
 
 //ROUTES
-app.route('/api/v1/trips').get(getAllTrips).post(createTrip);
+const tripsRouter = express.Router();
+const usersRouter = express.Router();
 
-app
-  .route('/api/v1/trips/:id')
-  .get(getTrip)
-  .patch(updateTrip)
-  .delete(deleteTrip);
+tripsRouter.route('/').get(getAllTrips).post(createTrip);
+tripsRouter.route('/:id').get(getTrip).patch(updateTrip).delete(deleteTrip);
 
-app.route('/api/v1/users').get(getAllUsers).post(createUser);
+usersRouter.route('/').get(getAllUsers).post(createUser);
+usersRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 
-app
-  .route('/api/v1/users/:id')
-  .get(getUser)
-  .patch(updateUser)
-  .delete(deleteUser);
+app.use('/api/v1/trips', tripsRouter);
+app.use('/api/v1/users', usersRouter);
 
 //START SERVER
 const port = 3000;
