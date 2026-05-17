@@ -7,7 +7,7 @@ router.param('id', tripController.checkId);
 router
   .route('/')
   .get(tripController.getAllTrips)
-  .post(tripController.createTrip);
+  .post(tripController.checkBody, tripController.createTrip);
 router
   .route('/:id')
   .get(tripController.getTrip)
