@@ -1,7 +1,9 @@
+const mongoose = require('mongoose');
 const express = require('express');
 const morgan = require('morgan');
 const tripsRouter = require('./routes/tripRoutes');
 const usersRouter = require('./routes/userRoutes');
+
 const app = express();
 
 // MIDDLEWARES
