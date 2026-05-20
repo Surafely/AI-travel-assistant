@@ -55,26 +55,39 @@ exports.createTrip = async (req, res) => {
   }
 };
 
-exports.updateTrip = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: {
-      trip: 'Update your Trips....',
-    },
-  });
+exports.updateTrip = async (req, res) => {
+  try {
+    const trip = await Trip.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        trip,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
-exports.deleteTrip = (req, res) => {
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-};
+exports.deleteTrip = async (req, res) => {
+  try {
+    await Trip.findByIdAndDelete(req.params.id);
 
-// module.exports = {
-//   getAllTrips,
-//   getTrip,
-//   createTrip,
-//   updateTrip,
-//   deleteTrip,
-// };
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err,
+    });
+  }
+};
