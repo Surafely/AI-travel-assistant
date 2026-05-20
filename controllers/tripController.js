@@ -1,59 +1,58 @@
-const fs = require('fs');
 const Trip = require('../models/tripModel');
 
-exports.checkId = (req, res, next, val) => {
-  console.log(`Trip ID is: ${val}`);
+exports.getAllTrips = async (req, res) => {
+  try {
+    const trips = await Trip.find();
 
-  if (req.params.id > trips.length)
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
+    res.status(200).json({
+      status: 'success',
+      results: trips.length,
+      data: {
+        trips,
+      },
     });
-  next();
-};
-
-exports.checkBody = (req, res, next) => {
-  if (!req.body.name || !req.body.price) {
-    return res.status(400).json({
+  } catch (err) {
+    res.status(400).json({
       status: 'fail',
-      message: 'Missing name or price',
+      message: err,
     });
   }
-  next();
 };
 
-exports.getAllTrips = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestedTime,
-    // results: trips.length,
-    // data: {
-    //   trips,
-    // },
-  });
+exports.getTrip = async (req, res) => {
+  try {
+    const trip = await Trip.findById(req.params.id);
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        trip,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
-exports.getTrip = (req, res) => {
-  //   console.log(req.params);
-  const id = req.params.id * 1;
-  // const trip = trips.find((el) => el.id === id);
+exports.createTrip = async (req, res) => {
+  try {
+    const newTrip = await Trip.create(req.body);
 
-  // res.status(200).json({
-  //   status: 'success',
-  //   data: {
-  //     trip,
-  //   },
-  // });
-};
-
-exports.createTrip = (req, res) => {
-  // console.log(req.body);
-  res.status(201).json({
-    status: 'success',
-    // data: {
-    //   trip: newTrip,
-    // },
-  });
+    res.status(201).json({
+      status: 'success',
+      data: {
+        trip: newTrip,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: 'Invalid data sent',
+    });
+  }
 };
 
 exports.updateTrip = (req, res) => {

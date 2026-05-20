@@ -23,10 +23,10 @@ const tripSchema = new mongoose.Schema({
     type: Number,
     default: 4.5,
   },
-  ratingsQuantity: {
-    type: Number,
-    default: 0,
-  },
+  //   ratingsQuantity: {
+  //     type: Number,
+  //     default: 0,
+  //   },
 });
 
 const Trip = mongoose.model('Trip', tripSchema);
