@@ -12,6 +12,8 @@
     "description": "Visit Shibuya, Tokyo Tower, temples, sushi markets, and enjoy Japanese culture.",
     "imageCover": "tokyo.jpg",
     "images": ["tokyo-1.jpg", "tokyo-2.jpg", "tokyo-3.jpg"],
+    "destination": "Tokyo",
+    "budget": 3000,
     "startDates": ["2026-06-15T09:00:00.000Z", "2026-07-10T09:00:00.000Z"],
     "startLocation": {
       "type": "Point",
@@ -49,6 +51,8 @@
     "description": "Visit the Eiffel Tower, Louvre Museum, cafes, and Seine River cruises.",
     "imageCover": "paris.jpg",
     "images": ["paris-1.jpg", "paris-2.jpg"],
+    "destination": "Paris",
+    "budget": 2500,
     "startDates": ["2026-08-01T09:00:00.000Z"],
     "startLocation": {
       "type": "Point",
