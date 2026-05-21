@@ -77,6 +77,8 @@
     "price": 1899,
     "summary": "Relax and explore the tropical paradise of Bali.",
     "description": "Enjoy beaches, waterfalls, temples, rice terraces, and island adventures.",
+    "destination": "Balii",
+    "budget": 2000,
     "imageCover": "bali.jpg",
     "images": ["bali-1.jpg", "bali-2.jpg", "bali-3.jpg"],
     "startDates": ["2026-09-05T09:00:00.000Z"],
