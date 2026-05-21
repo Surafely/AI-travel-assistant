@@ -4,7 +4,7 @@
     "name": "Explore Tokyo",
     "duration": 5,
     "maxGroupSize": 12,
-    "difficulty": "medium",
+    "difficulty": "easy",
     "ratingsAverage": 4.8,
     "ratingsQuantity": 37,
     "price": 1499,
@@ -41,7 +41,7 @@
   {
     "id": 1,
     "name": "Paris City Escape",
-    "duration": 4,
+    "duration": 5,
     "maxGroupSize": 10,
     "difficulty": "easy",
     "ratingsAverage": 4.7,

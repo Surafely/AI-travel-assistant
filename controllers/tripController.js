@@ -2,7 +2,48 @@ const Trip = require('../models/tripModel');
 
 exports.getAllTrips = async (req, res) => {
   try {
-    const trips = await Trip.find();
+    // FILTERING
+    const queryObj = { ...req.query };
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach((el) => delete queryObj[el]);
+
+    // ADVANCED FILTERING
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    const parsedQuery = JSON.parse(queryStr);
+
+    let query = Trip.find(parsedQuery);
+
+    // SORTING
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort('-createdAt');
+    }
+
+    // FIELDS LIMITATION
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+      query = query.select(fields);
+    } else {
+      query = query.select('-__v');
+    }
+
+    // PAGINATION
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    if (req.query.page) {
+      const numTrips = await Trip.countDocuments();
+      if (skip >= numTrips) throw new Error('This page does not exist');
+    }
+
+    const trips = await query;
 
     res.status(200).json({
       status: 'success',
@@ -12,9 +53,9 @@ exports.getAllTrips = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(400).json({
+    res.status(404).json({
       status: 'fail',
-      message: err,
+      message: err.message,
     });
   }
 };

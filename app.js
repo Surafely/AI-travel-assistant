@@ -6,6 +6,8 @@ const usersRouter = require('./routes/userRoutes');
 
 const app = express();
 
+app.set('query parser', 'extended');
+
 // MIDDLEWARES
 
 if (process.env.NODE_ENV === 'development') {
