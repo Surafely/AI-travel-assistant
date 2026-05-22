@@ -99,3 +99,102 @@ exports.deleteTrip = async (req, res) => {
     });
   }
 };
+
+exports.getTripStats = async (req, res) => {
+  try {
+    const stats = await Trip.aggregate([
+      {
+        $match: { ratingsAverage: { $gte: 4.5 } },
+      },
+
+      {
+        $group: {
+          _id: '$difficulty',
+          numtrips: { $sum: 1 },
+          numRatings: { $sum: '$ratingsQuantity' },
+          avgRating: { $avg: '$ratingsAverage' },
+          avgPrice: { $avg: '$price' },
+          maxPrice: { $max: '$price' },
+          minPrice: { $min: '$price' },
+        },
+      },
+
+      {
+        $sort: {
+          avgPrice: 1,
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        stats,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err,
+    });
+  }
+};
+
+exports.getMonthlyPlan = async (req, res) => {
+  try {
+    const year = req.params.year * 1;
+
+    const plan = await Trip.aggregate([
+      {
+        $unwind: '$startDates',
+      },
+
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+
+      {
+        $group: {
+          _id: { $month: '$startDates' },
+          numTripStarts: { $sum: 1 },
+          trips: { $push: '$name' },
+        },
+      },
+
+      {
+        $addFields: { month: '$_id' },
+      },
+
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+
+      {
+        $sort: { numTripStarts: 1 },
+      },
+
+      {
+        $limit: 2,
+      },
+    ]);
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        plan,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err,
+    });
+  }
+};

@@ -5,6 +5,9 @@ const router = express.Router();
 
 // router.param('id', tripController.checkId);
 
+router.route('/trip-stats').get(tripController.getTripStats);
+router.route('/monthly-plan/:year').get(tripController.getMonthlyPlan);
+
 router
   .route('/')
   .get(tripController.getAllTrips)
