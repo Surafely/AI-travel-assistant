@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+// const validator = require('validator');
 
 const tripSchema = new mongoose.Schema(
   {
@@ -8,6 +9,11 @@ const tripSchema = new mongoose.Schema(
       required: [true, 'A trip must have a name'],
       unique: true,
       trim: true,
+      maxlength: [40, 'A trip name must have less or equal to 40 characters.'],
+      minlength: [
+        10,
+        'A trip name must have greater or equal to 10 characters.',
+      ],
     },
 
     slug: String,
@@ -15,6 +21,17 @@ const tripSchema = new mongoose.Schema(
     price: {
       type: Number,
       required: [true, 'A trip must have a price'],
+    },
+
+    priceDiscount: {
+      type: Number,
+      validate: {
+        validator: function (val) {
+          return val < this.price;
+        },
+        message:
+          'Discount price ({VALUE}) should be less than the regular price',
+      },
     },
 
     destination: {
@@ -35,6 +52,8 @@ const tripSchema = new mongoose.Schema(
     ratingsAverage: {
       type: Number,
       default: 4.5,
+      max: [5, 'Ratings must be below 5.0'],
+      min: [1, 'Ratings must be above 5.0'],
     },
 
     ratingsQuantity: {
@@ -50,9 +69,12 @@ const tripSchema = new mongoose.Schema(
     difficulty: {
       type: String,
       required: [true, 'A trip must have a difficulty'],
+      enum: {
+        values: ['easy', 'medium', 'difficult'],
+        message: 'Trips difficulty must be either easy, medium or difficulty',
+      },
     },
 
-    priceDiscount: Number,
     summary: {
       type: String,
       trim: true,
@@ -105,6 +127,7 @@ tripSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
+// DOCUMENT MIDDLEWARE
 tripSchema.pre('save', function () {
   this.slug = slugify(this.name, { lower: true });
 });
@@ -113,6 +136,7 @@ tripSchema.pre(/^find/, function () {
   this.find({ secretTrip: { $ne: true } });
 });
 
+// AGGREGATE MIDDLEWARE
 tripSchema.pre('aggregate', function () {
   this.pipeline().unshift({ $match: { secretTrip: { $ne: true } } });
 });
