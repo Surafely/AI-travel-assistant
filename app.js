@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const express = require('express');
 const morgan = require('morgan');
+const AppError = require('./utils/appError');
+const globalErrorHsndler = require('./controllers/errorController');
+
 const tripsRouter = require('./routes/tripRoutes');
 const usersRouter = require('./routes/userRoutes');
 
@@ -27,5 +30,11 @@ app.use((req, res, next) => {
 
 app.use('/api/v1/trips', tripsRouter);
 app.use('/api/v1/users', usersRouter);
+
+app.all('/{*splat}', (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server.`, 404));
+});
+
+app.use(globalErrorHsndler);
 
 module.exports = app;
