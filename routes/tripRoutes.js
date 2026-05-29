@@ -17,6 +17,10 @@ router
   .route('/:id')
   .get(tripController.getTrip)
   .patch(tripController.updateTrip)
-  .delete(tripController.deleteTrip);
+  .delete(
+    authController.protect,
+    authController.restrictTo('admin'),
+    tripController.deleteTrip,
+  );
 
 module.exports = router;
