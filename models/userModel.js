@@ -58,6 +58,13 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
+
+  loginAttempts: {
+    type: Number,
+    default: 0,
+  },
+
+  lockUntil: Date,
 });
 
 userSchema.pre('save', async function () {
@@ -76,6 +83,42 @@ userSchema.pre('save', function () {
 userSchema.pre(/^find/, function () {
   this.find({ active: { $ne: false } });
 });
+
+userSchema.virtual('isLocked').get(function () {
+  return !!(this.lockUntil && this.lockUntil > Date.now());
+});
+
+userSchema.methods.incLoginAttempts = async function () {
+  // Lock has expired
+  if (this.lockUntil && this.lockUntil < Date.now()) {
+    this.loginAttempts = 1;
+    this.lockUntil = undefined;
+
+    return await this.save({ validateBeforeSave: false });
+  }
+
+  // Increase failed attempts
+  this.loginAttempts += 1;
+
+  // Lock account after 5 failed attempts
+  const maxAttempts = Number(process.env.MAX_LOGIN_ATTEMPTS);
+  const lockTime = Number(process.env.LOCK_TIME);
+
+  console.log({
+    attempts: this.loginAttempts,
+    maxAttempts,
+    lockTime,
+  });
+
+  if (this.loginAttempts >= maxAttempts && !this.isLocked) {
+    console.log('LOCKING ACCOUNT');
+
+    this.lockUntil = Date.now() + lockTime;
+
+    console.log('lockUntil:', this.lockUntil);
+  }
+  await this.save({ validateBeforeSave: false });
+};
 
 userSchema.methods.correctPassword = async function (
   candidatePassword,

@@ -40,16 +40,49 @@ exports.signup = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
-  // CHECK IF EMAIL AND PASSWORD EXISTS
+  // Check if email and password exist
   if (!email || !password) {
     return next(new AppError('Please provide email and password', 400));
   }
 
-  // CHECK IF EMAIL AND PASSWORD IS CORRECT
+  // Find user
   const user = await User.findOne({ email }).select('+password');
 
-  if (!user || !(await user.correctPassword(password, user.password)))
+  // User not found
+  if (!user) {
     return next(new AppError('Incorrect email or password!', 401));
+  }
+
+  // Check if account is locked
+  if (user.isLocked) {
+    const remainingMs = user.lockUntil - Date.now();
+
+    const minutes = Math.floor(remainingMs / (60 * 1000));
+    const seconds = Math.floor((remainingMs % (60 * 1000)) / 1000);
+
+    return next(
+      new AppError(
+        `Account is locked. Try again in ${minutes}m ${seconds}s.`,
+        401,
+      ),
+    );
+  }
+
+  // Check password
+  const correct = await user.correctPassword(password, user.password);
+
+  // Wrong password
+  if (!correct) {
+    await user.incLoginAttempts();
+
+    return next(new AppError('Incorrect email or password!', 401));
+  }
+
+  // Successful login
+  user.loginAttempts = 0;
+  user.lockUntil = undefined;
+
+  await user.save({ validateBeforeSave: false });
 
   createSendToken(user, 200, res);
 });
