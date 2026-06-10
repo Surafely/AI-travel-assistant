@@ -1,7 +1,16 @@
 class APIFeatures {
   constructor(query, queryString) {
     this.query = query;
-    this.queryString = queryString;
+
+    this.queryString = {};
+
+    Object.entries(queryString).forEach(([key, value]) => {
+      this.queryString[key] = Array.isArray(value)
+        ? value[value.length - 1]
+        : value;
+    });
+
+    console.log('CLEAN QUERY:', this.queryString);
   }
 
   filter() {
@@ -9,11 +18,10 @@ class APIFeatures {
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach((el) => delete queryObj[el]);
 
-    // ADVANCED FILTERING
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
-    this.query.find(JSON.parse(queryStr));
+    this.query = this.query.find(JSON.parse(queryStr));
 
     return this;
   }
@@ -29,7 +37,7 @@ class APIFeatures {
     return this;
   }
 
-  limitFileds() {
+  limitFields() {
     if (this.queryString.fields) {
       const fields = this.queryString.fields.split(',').join(' ');
       this.query = this.query.select(fields);

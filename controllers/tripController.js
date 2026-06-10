@@ -8,7 +8,7 @@ exports.getAllTrips = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Trip.find(), req.query)
     .filter()
     .sort()
-    .limitFileds()
+    .limitFields()
     .paginate();
   const trips = await features.query;
 
