@@ -1,26 +1,82 @@
 [
   {
     "name": "Surafel Yigezu",
-    "email": "surafel@example.com",
+    "email": "surafelyigezu@example.com",
+    "photo": "user-1.jpg",
+    "password": "$2b$12$fyB49cfsUlu4WM1jbTcpMO2tBza4tnr.jioDNR6dWSJrTX6ZJyVX.",
     "role": "admin",
-    "password": "test1234",
-    "passwordConfirm": "test1234",
-    "photo": "user-1.jpg"
+    "active": true
   },
   {
-    "name": "John Carter",
-    "email": "john@example.com",
+    "name": "Sara Johnson",
+    "email": "sarajohnson@example.com",
+    "photo": "user-2.jpg",
+    "password": "$2b$12$lhJNCDfpmMO.qMmctF1j4OQACci.36KdGENRsbPmXxOYTeK60bBzy",
     "role": "user",
-    "password": "test1234",
-    "passwordConfirm": "test1234",
-    "photo": "user-2.jpg"
+    "active": true
   },
   {
-    "name": "Emma Watson",
-    "email": "emma@example.com",
-    "role": "guide",
-    "password": "test1234",
-    "passwordConfirm": "test1234",
-    "photo": "user-3.jpg"
+    "name": "Daniel Smith",
+    "email": "danielsmith@example.com",
+    "photo": "user-3.jpg",
+    "password": "$2b$12$bRk1euK2l12GexdOvzHFpOqY3c4d3OvDDgIE1ED7jGo7.TC6A26DG",
+    "role": "user",
+    "active": true
+  },
+  {
+    "name": "Maya Chen",
+    "email": "mayachen@example.com",
+    "photo": "user-4.jpg",
+    "password": "$2b$12$wvyDxloiS.h/w244W2oKeOp7G3o7Z.E.guKA2Uq/nL6f5OIQKXiAS",
+    "role": "user",
+    "active": true
+  },
+  {
+    "name": "Noah Williams",
+    "email": "noahwilliams@example.com",
+    "photo": "user-5.jpg",
+    "password": "$2b$12$/4OxLg5FDPFseqcPNee3IOuZUkNSBuoaQCo9dMNC83YOPix5Sv9ua",
+    "role": "user",
+    "active": true
+  },
+  {
+    "name": "Hana Tesfaye",
+    "email": "hanatesfaye@example.com",
+    "photo": "user-6.jpg",
+    "password": "$2b$12$6zgNkCHhwhqJVkR2n7BG4.Y/NGZerPtQ80tJJ4BXAyzNIE3lJdW4q",
+    "role": "user",
+    "active": true
+  },
+  {
+    "name": "Liam Brown",
+    "email": "liambrown@example.com",
+    "photo": "user-7.jpg",
+    "password": "$2b$12$Q26TypN6vp62VWy37dnM4.qOsEfLXpT0t9Tf.PHqKYDQ6arJx6KwO",
+    "role": "user",
+    "active": true
+  },
+  {
+    "name": "Olivia Davis",
+    "email": "oliviadavis@example.com",
+    "photo": "user-8.jpg",
+    "password": "$2b$12$dP4jj6ylk4y1CmmrxOnwx.OYFrFd9QW9M1TLHhy/.N0qPxjh2jIXC",
+    "role": "user",
+    "active": true
+  },
+  {
+    "name": "Elias Mohammed",
+    "email": "eliasmohammed@example.com",
+    "photo": "user-9.jpg",
+    "password": "$2b$12$vdPVj3lQvbOOR0MFqjOINOK9fyIsTnpFO0DVzSHbC4HmiZgGX1g5O",
+    "role": "user",
+    "active": true
+  },
+  {
+    "name": "Sophia Garcia",
+    "email": "sophiagarcia@example.com",
+    "photo": "user-10.jpg",
+    "password": "$2b$12$UAt69ksjrqOFcY352DCRd./lkclgbe/6RBEvqezOizxq6v4s4xgSS",
+    "role": "user",
+    "active": true
   }
 ]

@@ -1,0 +1,253 @@
+[
+  {
+    "name": "Tokyo Culture Discovery",
+    "price": 1850,
+    "priceDiscount": 1695,
+    "destination": "Tokyo, Japan",
+    "budget": 2800,
+    "duration": 6,
+    "ratingsAverage": 4.8,
+    "ratingsQuantity": 42,
+    "maxGroupSize": 12,
+    "difficulty": "easy",
+    "summary": "A balanced city trip through Tokyo's temples, food markets, neighborhoods, and skyline views.",
+    "description": "This six-day Tokyo trip is designed for travelers who want a practical mix of culture, food, history, and modern city life. The route starts near Tokyo Station, then moves through Asakusa, Shibuya, Harajuku, Tsukiji, and Shinjuku. Guests visit Senso-ji Temple, learn how to navigate Tokyo's train system, explore local food streets, and end with panoramic views from the Tokyo Metropolitan Government Building. The pace is comfortable and works well for first-time visitors.",
+    "imageCover": "tokyo-culture-cover.jpg",
+    "images": ["tokyo-asakusa.jpg", "tokyo-shibuya.jpg", "tokyo-skyline.jpg"],
+    "startDates": [
+      "2026-07-12T09:00:00.000Z",
+      "2026-09-06T09:00:00.000Z",
+      "2026-11-15T09:00:00.000Z"
+    ],
+    "secretTrip": false,
+    "startLocations": {
+      "type": "Point",
+      "coordinates": [139.7671, 35.6812],
+      "address": "Tokyo Station, 1 Chome Marunouchi, Chiyoda City, Tokyo, Japan",
+      "description": "Main meeting point at Tokyo Station"
+    },
+    "locations": [
+      {
+        "type": "Point",
+        "coordinates": [139.7967, 35.7148],
+        "address": "Senso-ji Temple, 2 Chome-3-1 Asakusa, Taito City, Tokyo, Japan",
+        "description": "Historic temple visit and Asakusa walking tour",
+        "day": 1
+      },
+      {
+        "type": "Point",
+        "coordinates": [139.7006, 35.6595],
+        "address": "Shibuya Crossing, Shibuya City, Tokyo, Japan",
+        "description": "Shibuya neighborhood walk and evening food stop",
+        "day": 2
+      },
+      {
+        "type": "Point",
+        "coordinates": [139.6917, 35.6896],
+        "address": "Tokyo Metropolitan Government Building, Shinjuku City, Tokyo, Japan",
+        "description": "Free observation deck and city orientation",
+        "day": 5
+      }
+    ]
+  },
+  {
+    "name": "Paris Art And History",
+    "price": 1650,
+    "priceDiscount": 1495,
+    "destination": "Paris, France",
+    "budget": 2600,
+    "duration": 5,
+    "ratingsAverage": 4.7,
+    "ratingsQuantity": 35,
+    "maxGroupSize": 10,
+    "difficulty": "easy",
+    "summary": "A five-day Paris itinerary focused on museums, historic landmarks, cafes, and river views.",
+    "description": "This Paris trip is built around the city's most important art, architecture, and neighborhood experiences. Travelers visit the Louvre, Notre-Dame area, Montmartre, the Eiffel Tower, and the Seine riverfront while leaving time for cafes, markets, and independent wandering. The itinerary keeps walking distances manageable and uses public transport for longer transfers.",
+    "imageCover": "paris-art-cover.jpg",
+    "images": ["paris-louvre.jpg", "paris-eiffel.jpg", "paris-montmartre.jpg"],
+    "startDates": ["2026-08-03T09:00:00.000Z", "2026-10-12T09:00:00.000Z"],
+    "secretTrip": false,
+    "startLocations": {
+      "type": "Point",
+      "coordinates": [2.3522, 48.8566],
+      "address": "Hotel de Ville, Place de l'Hotel de Ville, Paris, France",
+      "description": "Central Paris meeting point"
+    },
+    "locations": [
+      {
+        "type": "Point",
+        "coordinates": [2.3376, 48.8606],
+        "address": "Louvre Museum, Rue de Rivoli, Paris, France",
+        "description": "Guided museum visit",
+        "day": 1
+      },
+      {
+        "type": "Point",
+        "coordinates": [2.2945, 48.8584],
+        "address": "Eiffel Tower, Champ de Mars, Paris, France",
+        "description": "Landmark visit and evening viewpoint",
+        "day": 3
+      },
+      {
+        "type": "Point",
+        "coordinates": [2.3431, 48.8867],
+        "address": "Sacré-Cœur, 35 Rue du Chevalier de la Barre, Paris, France",
+        "description": "Montmartre art district walk",
+        "day": 4
+      }
+    ]
+  },
+  {
+    "name": "Bali Nature Retreat",
+    "price": 1925,
+    "priceDiscount": 1740,
+    "destination": "Bali, Indonesia",
+    "budget": 2400,
+    "duration": 7,
+    "ratingsAverage": 4.9,
+    "ratingsQuantity": 58,
+    "maxGroupSize": 14,
+    "difficulty": "medium",
+    "summary": "A week in Bali combining rice terraces, temples, waterfalls, beaches, and local craft villages.",
+    "description": "This seven-day Bali retreat focuses on nature, local culture, and relaxed exploration. The trip begins near Denpasar, then continues to Ubud, Tegallalang, Tirta Empul, Tegenungan Waterfall, and the south coast. The schedule includes temple etiquette guidance, short hikes, market visits, optional wellness activities, and enough free time to enjoy Bali's slower rhythm.",
+    "imageCover": "bali-nature-cover.jpg",
+    "images": ["bali-ubud.jpg", "bali-rice-terraces.jpg", "bali-temple.jpg"],
+    "startDates": ["2026-09-05T09:00:00.000Z", "2026-12-04T09:00:00.000Z"],
+    "secretTrip": false,
+    "startLocations": {
+      "type": "Point",
+      "coordinates": [115.1675, -8.7482],
+      "address": "Ngurah Rai International Airport, Denpasar, Bali, Indonesia",
+      "description": "Airport arrival and group transfer point"
+    },
+    "locations": [
+      {
+        "type": "Point",
+        "coordinates": [115.2625, -8.5069],
+        "address": "Ubud, Gianyar Regency, Bali, Indonesia",
+        "description": "Cultural base for markets, crafts, and restaurants",
+        "day": 2
+      },
+      {
+        "type": "Point",
+        "coordinates": [115.2793, -8.4319],
+        "address": "Tegallalang Rice Terrace, Gianyar Regency, Bali, Indonesia",
+        "description": "Rice terrace walk and photography stop",
+        "day": 3
+      },
+      {
+        "type": "Point",
+        "coordinates": [115.2899, -8.5756],
+        "address": "Tegenungan Waterfall, Kemenuh, Bali, Indonesia",
+        "description": "Waterfall visit and short nature walk",
+        "day": 5
+      }
+    ]
+  },
+  {
+    "name": "Cape Town Coast Trek",
+    "price": 2150,
+    "priceDiscount": 1980,
+    "destination": "Cape Town, South Africa",
+    "budget": 3100,
+    "duration": 8,
+    "ratingsAverage": 4.8,
+    "ratingsQuantity": 44,
+    "maxGroupSize": 12,
+    "difficulty": "difficult",
+    "summary": "An active Cape Town trip with mountain hikes, coastal drives, beaches, and historic neighborhoods.",
+    "description": "This eight-day Cape Town itinerary is for active travelers who want dramatic scenery and meaningful city context. The trip includes Table Mountain, Lion's Head, Bo-Kaap, the V&A Waterfront, Chapman's Peak Drive, Cape Point, and Boulders Beach. Some days include steep walking or hiking, so guests should be comfortable with moderate physical activity.",
+    "imageCover": "cape-town-coast-cover.jpg",
+    "images": [
+      "cape-town-table-mountain.jpg",
+      "cape-town-cape-point.jpg",
+      "cape-town-bo-kaap.jpg"
+    ],
+    "startDates": ["2026-10-18T08:30:00.000Z", "2027-02-07T08:30:00.000Z"],
+    "secretTrip": false,
+    "startLocations": {
+      "type": "Point",
+      "coordinates": [18.4241, -33.9249],
+      "address": "Cape Town City Centre, Cape Town, South Africa",
+      "description": "Central Cape Town meeting point"
+    },
+    "locations": [
+      {
+        "type": "Point",
+        "coordinates": [18.4098, -33.9628],
+        "address": "Table Mountain Aerial Cableway, Tafelberg Road, Cape Town, South Africa",
+        "description": "Table Mountain hike or cableway visit depending on weather",
+        "day": 2
+      },
+      {
+        "type": "Point",
+        "coordinates": [18.3751, -34.3568],
+        "address": "Cape Point, Cape Peninsula, South Africa",
+        "description": "Cape Peninsula day trip",
+        "day": 5
+      },
+      {
+        "type": "Point",
+        "coordinates": [18.4517, -34.1975],
+        "address": "Boulders Beach, Simon's Town, South Africa",
+        "description": "Coastal stop near the protected penguin colony",
+        "day": 6
+      }
+    ]
+  },
+  {
+    "name": "New York Food Walk",
+    "price": 1380,
+    "priceDiscount": 1250,
+    "destination": "New York City, USA",
+    "budget": 2300,
+    "duration": 4,
+    "ratingsAverage": 4.6,
+    "ratingsQuantity": 29,
+    "maxGroupSize": 8,
+    "difficulty": "easy",
+    "summary": "A compact New York trip built around neighborhoods, food stops, skyline views, and city icons.",
+    "description": "This four-day New York City itinerary is ideal for travelers who want a focused introduction to the city without rushing every hour. The route includes Lower Manhattan, Chinatown, Greenwich Village, Central Park, Brooklyn Bridge, and a food-led neighborhood walk. The group uses the subway and walks several miles per day at an easy pace.",
+    "imageCover": "new-york-food-cover.jpg",
+    "images": [
+      "new-york-brooklyn-bridge.jpg",
+      "new-york-chinatown.jpg",
+      "new-york-central-park.jpg"
+    ],
+    "startDates": [
+      "2026-07-22T10:00:00.000Z",
+      "2026-09-17T10:00:00.000Z",
+      "2026-12-10T10:00:00.000Z"
+    ],
+    "secretTrip": false,
+    "startLocations": {
+      "type": "Point",
+      "coordinates": [-74.006, 40.7128],
+      "address": "City Hall Park, New York, NY, USA",
+      "description": "Lower Manhattan meeting point"
+    },
+    "locations": [
+      {
+        "type": "Point",
+        "coordinates": [-73.9969, 40.7061],
+        "address": "Brooklyn Bridge, New York, NY, USA",
+        "description": "Morning bridge walk and skyline views",
+        "day": 1
+      },
+      {
+        "type": "Point",
+        "coordinates": [-73.997, 40.7158],
+        "address": "Chinatown, New York, NY, USA",
+        "description": "Food walk and neighborhood history",
+        "day": 2
+      },
+      {
+        "type": "Point",
+        "coordinates": [-73.9654, 40.7829],
+        "address": "Central Park, New York, NY, USA",
+        "description": "Park walk and museum district orientation",
+        "day": 3
+      }
+    ]
+  }
+]

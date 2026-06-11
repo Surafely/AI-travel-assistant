@@ -7,12 +7,22 @@ const router = express.Router();
 // router.param('id', tripController.checkId);
 
 router.route('/trip-stats').get(tripController.getTripStats);
-router.route('/monthly-plan/:year').get(tripController.getMonthlyPlan);
+router
+  .route('/monthly-plan/:year')
+  .get(
+    authController.protect,
+    authController.restrictTo('admin'),
+    tripController.getMonthlyPlan,
+  );
 
 router
   .route('/')
-  .get(authController.protect, tripController.getAllTrips)
-  .post(tripController.createTrip);
+  .get(tripController.getAllTrips)
+  .post(
+    authController.protect,
+    authController.restrictTo('admin'),
+    tripController.createTrip,
+  );
 router
   .route('/:id')
   .get(tripController.getTrip)

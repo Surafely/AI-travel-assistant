@@ -148,6 +148,10 @@ const tripSchema = new mongoose.Schema(
   },
 );
 
+// tripSchema.index({ price: 1 });
+tripSchema.index({ price: 1, ratingsAverage: -1 });
+tripSchema.index({ slug: 1 });
+
 tripSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });

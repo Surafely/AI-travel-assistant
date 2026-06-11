@@ -1,83 +1,25 @@
 const Trip = require('../models/tripModel');
-const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
+// const AppError = require('../utils/appError');
+const factory = require('./handlerFactory');
 
-exports.getAllTrips = catchAsync(async (req, res, next) => {
-  //EXCUTE QUERY
-  const features = new APIFeatures(Trip.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-  const trips = await features.query;
+exports.getAllTrips = factory.getAll(Trip);
+exports.getTrip = factory.getOne(Trip);
+exports.createTrip = factory.createOne(Trip);
+exports.updateTrip = factory.updateOne(Trip);
+exports.deleteTrip = factory.deleteOne(Trip);
+// exports.deleteTrip = catchAsync(async (req, res, next) => {
+//   const trip = await Trip.findByIdAndDelete(req.params.id);
 
-  //SEND RESPONSE
-  res.status(200).json({
-    status: 'success',
-    results: trips.length,
-    data: {
-      trips,
-    },
-  });
-});
+//   if (!trip) {
+//     return next(new AppError('No trip found with that ID.', 404));
+//   }
 
-exports.getTrip = catchAsync(async (req, res, next) => {
-  const trip = await Trip.findById(req.params.id);
-
-  if (!trip) {
-    return next(new AppError('No trip found with that ID.', 404));
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      trip,
-    },
-  });
-});
-
-exports.createTrip = catchAsync(async (req, res, next) => {
-  const newTrip = await Trip.create(req.body);
-
-  res.status(201).json({
-    status: 'success',
-    data: {
-      trip: newTrip,
-    },
-  });
-});
-
-exports.updateTrip = catchAsync(async (req, res, next) => {
-  const trip = await Trip.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-
-  if (!trip) {
-    return next(new AppError('No trip found with that ID.', 404));
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      trip,
-    },
-  });
-});
-
-exports.deleteTrip = catchAsync(async (req, res, next) => {
-  const trip = await Trip.findByIdAndDelete(req.params.id);
-
-  if (!trip) {
-    return next(new AppError('No trip found with that ID.', 404));
-  }
-
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-});
+//   res.status(204).json({
+//     status: 'success',
+//     data: null,
+//   });
+// });
 
 exports.getTripStats = catchAsync(async (req, res, next) => {
   const stats = await Trip.aggregate([
