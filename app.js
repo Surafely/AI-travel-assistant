@@ -9,6 +9,7 @@ const globalErrorHsndler = require('./controllers/errorController');
 
 const tripsRouter = require('./routes/tripRoutes');
 const usersRouter = require('./routes/userRoutes');
+const conversationRouter = require('./routes/conversationRoutes');
 
 const app = express();
 
@@ -54,6 +55,7 @@ app.use((req, res, next) => {
 
 app.use('/api/v1/trips', tripsRouter);
 app.use('/api/v1/users', usersRouter);
+app.use('/api/v1/conversations', conversationRouter);
 
 app.all('/{*splat}', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server.`, 404));
