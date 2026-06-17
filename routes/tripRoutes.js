@@ -16,6 +16,12 @@ router
   );
 
 router
+  .route('/trips-within/:distance/center/:latlng/unit/:unit')
+  .get(tripController.getTripsWithin);
+
+router.route('/distances/:latlng/unit/:unit').get(tripController.getDistances);
+
+router
   .route('/')
   .get(tripController.getAllTrips)
   .post(
