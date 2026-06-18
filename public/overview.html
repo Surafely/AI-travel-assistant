@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trip Overview | AI Travel Knowledge Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      .overview-app {
+        width: min(1120px, calc(100% - 2rem));
+        margin: 0 auto;
+        min-height: 100dvh;
+        padding: 1.25rem 0 3rem;
+      }
+
+      .overview-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.5rem 0 2rem;
+      }
+
+      .overview-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.65rem;
+        color: var(--text);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .overview-hero {
+        display: grid;
+        gap: 0.75rem;
+        max-width: 760px;
+        padding: 1rem 0 2rem;
+      }
+
+      .overview-kicker {
+        margin: 0;
+        color: var(--accent);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .overview-title {
+        font-size: clamp(2.15rem, 7vw, 4.75rem);
+        line-height: 0.98;
+      }
+
+      .overview-copy {
+        max-width: 620px;
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 1rem;
+      }
+
+      .trip-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .trip-card {
+        min-height: 260px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 1.15rem;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg-elevated);
+        box-shadow: var(--shadow);
+      }
+
+      .trip-card h2 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: 1.35rem;
+        line-height: 1.08;
+      }
+
+      .trip-card p {
+        margin: 0.8rem 0 0;
+        color: var(--text-muted);
+      }
+
+      .trip-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+        margin-top: 1rem;
+      }
+
+      .trip-meta span {
+        padding: 0.35rem 0.55rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: var(--text);
+        background: var(--bg-input);
+        font-size: 0.78rem;
+        font-weight: 600;
+      }
+
+      .trip-price {
+        margin-top: 1.5rem;
+        color: var(--accent);
+        font-size: 1.4rem;
+        font-weight: 700;
+      }
+
+      @media (max-width: 620px) {
+        .overview-nav {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .auth-bar {
+          justify-content: flex-start;
+          margin-bottom: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="overview-app">
+      <nav class="overview-nav" aria-label="Main">
+        <a class="overview-brand" href="./index.html">
+          <span class="logo-icon" aria-hidden="true">✈</span>
+          AI Travel
+        </a>
+        <div class="auth-bar">
+          <a href="./index.html" class="btn-auth btn-auth--ghost">Chat</a>
+          <a href="#" class="btn-auth btn-auth--solid">Book now</a>
+        </div>
+      </nav>
+
+      <section class="overview-hero">
+        <p class="overview-kicker">Trip overview</p>
+        <h1 class="overview-title">Explore curated travel plans</h1>
+        <p class="overview-copy">
+          Compare city escapes, nature retreats, and culture-first itineraries
+          from your seeded trip collection.
+        </p>
+      </section>
+
+      <section class="trip-grid" aria-label="Available trips">
+        <article class="trip-card">
+          <div>
+            <h2>Tokyo Culture Discovery</h2>
+            <p>
+              Temples, food streets, skyline views, and first-time Tokyo
+              orientation.
+            </p>
+            <div class="trip-meta">
+              <span>6 days</span>
+              <span>Easy</span>
+              <span>12 guests</span>
+            </div>
+          </div>
+          <div class="trip-price">$1,850</div>
+        </article>
+
+        <article class="trip-card">
+          <div>
+            <h2>Paris Art And History</h2>
+            <p>
+              Museums, historic landmarks, cafes, Montmartre, and Seine
+              riverfront walks.
+            </p>
+            <div class="trip-meta">
+              <span>5 days</span>
+              <span>Easy</span>
+              <span>10 guests</span>
+            </div>
+          </div>
+          <div class="trip-price">$1,650</div>
+        </article>
+
+        <article class="trip-card">
+          <div>
+            <h2>Bali Nature Retreat</h2>
+            <p>
+              Rice terraces, temples, waterfalls, beaches, and relaxed craft
+              village stops.
+            </p>
+            <div class="trip-meta">
+              <span>7 days</span>
+              <span>Medium</span>
+              <span>14 guests</span>
+            </div>
+          </div>
+          <div class="trip-price">$1,925</div>
+        </article>
+
+        <article class="trip-card">
+          <div>
+            <h2>Cape Town Coast Trek</h2>
+            <p>
+              Mountain hikes, coastal drives, beaches, and neighborhood history.
+            </p>
+            <div class="trip-meta">
+              <span>8 days</span>
+              <span>Difficult</span>
+              <span>12 guests</span>
+            </div>
+          </div>
+          <div class="trip-price">$2,150</div>
+        </article>
+
+        <article class="trip-card">
+          <div>
+            <h2>New York Food Walk</h2>
+            <p>
+              Lower Manhattan, Chinatown, skyline views, city icons, and local
+              food stops.
+            </p>
+            <div class="trip-meta">
+              <span>4 days</span>
+              <span>Easy</span>
+              <span>8 guests</span>
+            </div>
+          </div>
+          <div class="trip-price">$1,380</div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

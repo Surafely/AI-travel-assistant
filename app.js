@@ -1,3 +1,4 @@
+const path = require('path');
 const mongoose = require('mongoose');
 const express = require('express');
 const morgan = require('morgan');
@@ -13,9 +14,12 @@ const conversationRouter = require('./routes/conversationRoutes');
 
 const app = express();
 
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
 app.set('query parser', 'extended');
 
-// GLOBAL MIDDLEWARES
+//                                               GLOBAL MIDDLEWARES
 
 // SET SECURITY HTTP HEADERS
 app.use(helmet());
@@ -42,8 +46,13 @@ app.use('/api', limiter);
 // BODY PARSER, READING DATA FROM BODY INTO req.body
 app.use(express.json({ limit: '10kb' }));
 
+//ROUTES
+app.get('/', (req, res) => {
+  res.status(200).render('base');
+});
+
 // SERVING STATICF FIELS
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // TEST MIDDLEWARE
 app.use((req, res, next) => {
@@ -51,7 +60,17 @@ app.use((req, res, next) => {
   next();
 });
 
-//ROUTES
+app.use('/trip', (req, res) => {
+  res.status(200).render('trip', {
+    title: 'Paris Art And History',
+  });
+});
+
+app.use('/overview', (req, res) => {
+  res.status(200).render('overview', {
+    title: 'All Trips',
+  });
+});
 
 app.use('/api/v1/trips', tripsRouter);
 app.use('/api/v1/users', usersRouter);

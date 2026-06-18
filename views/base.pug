@@ -1,0 +1,71 @@
+doctype html
+html 
+    head
+        meta(charset='UTF-8')
+        meta(name='viewport' content='width=device-width, initial-scale=1.0')
+        link(rel='preconnect' href='https://fonts.googleapis.com')
+        link(rel='preconnect' href='https://fonts.gstatic.com' crossorigin)
+        link(href='https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap' rel='stylesheet')
+        link(rel='stylesheet' href='/style.css')
+        title Trip Overview | AI Travel Knowledge Assistant
+
+    body
+        main.overview-app
+            // MAIN-HEADER
+            include _header.pug
+
+            block content
+                section.overview-hero
+                    p.overview-kicker Trip overview
+                    h1.overview-title Explore curated travel plans
+                    p.overview-copy Compare city escapes, nature retreats, and culture-first itineraries from your seeded trip collection
+
+                section.trip-grid(aria-label='Available trips')
+                    article.trip-card
+                        div
+                            h2 Tokyo Culture Discovery
+                            p Temples, food streets, skyline views, and first-time Tokyo orientation
+                            .trip-meta
+                                span 6 days
+                                span Easy
+                                span 12 guests
+
+                        .trip-price $1,850   
+
+                    article.trip-card
+                        div
+                            h2 Paris Art And History
+                            p Museums, historic landmarks, cafes, Montmartre, and Seine riverfront walks.
+                            .trip-meta
+                                span 5 days
+                                span Easy
+                                span 10 guests
+
+                        .trip-price $1,650
+
+                    article.trip-card
+                        div
+                            h2 Bali Nature Retreat
+                            p Rice terraces, temples, waterfalls, beaches, and relaxed craft village stops.
+                            .trip-meta
+                                span 7 days
+                                span Medium
+                                span 14 guests
+                                
+                        .trip-price $1,925
+
+                    article.trip-card
+                        div
+                            h2 Cape Town Coast Trek
+                            p Mountain hikes, coastal drives, beaches, and neighborhood history.
+
+                        .trip-price $2,150
+
+                    article.trip-card
+                        div
+                            h2 New York Food Walk
+                            p Lower Manhattan, Chinatown, skyline views, city icons, and local food stops.
+
+                        .trip-price $1,380
+
+        
