@@ -1,4 +1,69 @@
 extends base
 
 block content
-    h1 This is the trip overview
+    main.main
+        .card-container
+            if trips && trips.length
+                each trip in trips
+                    -
+                        const startLocation = trip.startLocations && trip.startLocations.description
+                            ? trip.startLocations.description
+                            : trip.destination;
+                        const startDate = trip.startDates && trip.startDates.length
+                            ? new Date(trip.startDates[0]).toLocaleString('en-US', { month: 'long', year: 'numeric' })
+                            : 'Flexible dates';
+                        const stopCount = trip.locations ? trip.locations.length : 0;
+                        const detailsUrl = '/trip';
+
+                    .card
+                        .card__header
+                            .card__picture
+                                .card__picture-overlay &nbsp;
+                                if trip.imageCover
+                                    img.card__picture-img(
+                                        src=`/img/trips/${trip.imageCover}`,
+                                        alt=trip.name
+                                    )
+                            h3.heading-tertirary
+                                span= trip.name
+
+                        .card__details
+                            h4.card__sub-heading= `${trip.difficulty} ${trip.duration}-day trip`
+                            p.card__text= trip.summary
+                            .card__data
+                                svg.card__icon
+                                    use(xlink:href='/img/icons.svg#icon-map-pin')
+                                span= startLocation
+                            .card__data
+                                svg.card__icon
+                                    use(xlink:href='/img/icons.svg#icon-calendar')
+                                span= startDate
+                            .card__data
+                                svg.card__icon
+                                    use(xlink:href='/img/icons.svg#icon-flag')
+                                span= `${stopCount} stops`
+                            .card__data
+                                svg.card__icon
+                                    use(xlink:href='/img/icons.svg#icon-user')
+                                span= `${trip.maxGroupSize} people`
+
+                        .card__footer
+                            p
+                                if trip.priceDiscount
+                                    span.card__footer-value= `$${trip.priceDiscount}`
+                                    span.card__price-old= `$${trip.price}`
+                                    span.card__footer-text per person
+                                else
+                                    span.card__footer-value= `$${trip.price}`
+                                    span.card__footer-text per person
+                            p.card__ratings
+                                span.card__footer-value= trip.ratingsAverage
+                                |
+                                span.card__footer-text= ` rating (${trip.ratingsQuantity})`
+                            a.btn.btn--green.btn--small(href=detailsUrl) Details
+            else
+                .card
+                    .card__details
+                        h3.heading-tertirary
+                            span No trips found
+                        p.card__text Check that your database is connected and your trip data has been imported.

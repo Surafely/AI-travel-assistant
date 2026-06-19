@@ -11,6 +11,7 @@ const globalErrorHsndler = require('./controllers/errorController');
 const tripsRouter = require('./routes/tripRoutes');
 const usersRouter = require('./routes/userRoutes');
 const conversationRouter = require('./routes/conversationRoutes');
+const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
 
@@ -46,31 +47,17 @@ app.use('/api', limiter);
 // BODY PARSER, READING DATA FROM BODY INTO req.body
 app.use(express.json({ limit: '10kb' }));
 
-//ROUTES
-app.get('/', (req, res) => {
-  res.status(200).render('base');
-});
-
-// SERVING STATICF FIELS
-app.use(express.static(path.join(__dirname, 'public')));
-
 // TEST MIDDLEWARE
 app.use((req, res, next) => {
   req.requestedTime = new Date().toISOString();
   next();
 });
 
-app.use('/trip', (req, res) => {
-  res.status(200).render('trip', {
-    title: 'Paris Art And History',
-  });
-});
+//ROUTES
+app.use('/', viewRouter);
 
-app.use('/overview', (req, res) => {
-  res.status(200).render('overview', {
-    title: 'All Trips',
-  });
-});
+// SERVING STATICF FIELS
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/v1/trips', tripsRouter);
 app.use('/api/v1/users', usersRouter);
