@@ -1,0 +1,38 @@
+extends base
+
+block content
+  main.auth
+    section.auth__container
+      p.overview-kicker Welcome back
+      h1.auth__title Log in to your travel assistant
+      p.auth__copy Save itineraries, compare trips, and keep your planning history close.
+
+      form.form.form--login(action='/api/v1/users/login' method='POST')
+        .form__group
+          label.form__label(for='email') Email address
+          input.form__input(
+            id='email'
+            type='email'
+            name='email'
+            placeholder='you@example.com'
+            required
+          )
+
+        .form__group.ma-bt-md
+          label.form__label(for='password') Password
+          input.form__input(
+            id='password'
+            type='password'
+            name='password'
+            placeholder='••••••••'
+            required
+            minlength='8'
+          )
+
+        .form__group
+          button.btn.btn--green(type='submit')
+            | Log in
+
+      .auth__footer
+        p New here?
+        a(href='/') Explore available trips

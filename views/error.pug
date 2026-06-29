@@ -1,0 +1,15 @@
+extends base
+
+block content
+  main.auth
+    section.auth__container.auth__container--error
+      .error__icon ⚠️
+
+      p.overview-kicker Oops!
+      h1.auth__title= title || 'Something went wrong'
+
+      p.auth__copy= msg || 'An unexpected error occurred. Please try again later.'
+
+      .form__group
+        a.btn.btn--green(href='/')
+          | Go back home

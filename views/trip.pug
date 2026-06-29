@@ -1,4 +1,146 @@
 extends base
 
-block content 
-    h1 This is the trip details
+block head
+    link(rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css')
+    script(src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js')
+
+block content
+    if trip
+        -
+            const startLocation = trip.startLocations && trip.startLocations.description
+                ? trip.startLocations.description
+                : trip.destination;
+            const startDate = trip.startDates && trip.startDates.length
+                ? new Date(trip.startDates[0]).toLocaleString('en-US', { month: 'long', year: 'numeric' })
+                : 'Flexible dates';
+            const descriptionParts = trip.description
+                ? trip.description.split('. ').filter(Boolean)
+                : [];
+            const galleryImages = trip.images && trip.images.length
+                ? trip.images
+                : [trip.imageCover];
+            const locations = trip.locations || [];
+            const heroImage = trip.imageCover ? `/img/trips/${trip.imageCover}` : '';
+            const currentPrice = trip.priceDiscount || trip.price;
+
+        main.trip-detail
+            section.trip-hero
+                if heroImage
+                    img.trip-hero__image(
+                        src=heroImage,
+                        alt=trip.name,
+                        loading='eager',
+                        fetchpriority='high'
+                    )
+                .trip-hero__overlay(aria-hidden='true')
+                .trip-hero__content
+                    a.trip-hero__back(href='/') All trips
+                    p.overview-kicker= `${trip.difficulty} adventure`
+                    h1.trip-hero__title= trip.name
+                    .trip-hero__meta
+                        span
+                            svg.trip-icon
+                                use(xlink:href='/img/icons.svg#icon-clock')
+                            | #{trip.duration} days
+                        span
+                            svg.trip-icon
+                                use(xlink:href='/img/icons.svg#icon-map-pin')
+                            | #{trip.destination}
+
+            section.trip-section.trip-section--split
+                aside.trip-facts
+                    h2.trip-section__title Quick facts
+                    .trip-facts__item
+                        svg.trip-icon
+                            use(xlink:href='/img/icons.svg#icon-calendar')
+                        span.trip-facts__label Next date
+                        span.trip-facts__value= startDate
+                    .trip-facts__item
+                        svg.trip-icon
+                            use(xlink:href='/img/icons.svg#icon-trending-up')
+                        span.trip-facts__label Difficulty
+                        span.trip-facts__value= trip.difficulty
+                    .trip-facts__item
+                        svg.trip-icon
+                            use(xlink:href='/img/icons.svg#icon-user')
+                        span.trip-facts__label Group size
+                        span.trip-facts__value= `${trip.maxGroupSize} people`
+                    .trip-facts__item
+                        svg.trip-icon
+                            use(xlink:href='/img/icons.svg#icon-star')
+                        span.trip-facts__label Rating
+                        span.trip-facts__value= `${trip.ratingsAverage} / 5`
+
+                    h2.trip-section__title.trip-section__title--spaced Route stops
+                    if locations.length
+                        each location in locations
+                            .trip-facts__item
+                                svg.trip-icon
+                                    use(xlink:href='/img/icons.svg#icon-map-pin')
+                                span.trip-facts__label= `Day ${location.day}`
+                                span.trip-facts__value= location.description
+                    else
+                        p.trip-muted Route details are coming soon.
+
+                .trip-description
+                    h2.trip-section__title= `About ${trip.name}`
+                    p.trip-summary= trip.summary
+                    if descriptionParts.length
+                        each paragraph in descriptionParts
+                            p.trip-copy= paragraph.endsWith('.') ? paragraph : `${paragraph}.`
+                    else
+                        p.trip-copy More trip details are coming soon.
+
+            if galleryImages.length
+                section.trip-section.trip-section--gallery
+                    .trip-gallery(aria-label='Trip photos')
+                        each image, index in galleryImages
+                            figure.trip-gallery__item
+                                img(
+                                    src=`/img/trips/${image}`,
+                                    alt=`${trip.name} photo ${index + 1}`,
+                                    loading=index === 0 ? 'eager' : 'lazy'
+                                )
+
+            section.trip-section
+                .trip-map
+                    #map.trip-map__canvas(data-locations=JSON.stringify(locations))
+                    .trip-map__content
+                        p.overview-kicker Route preview
+                        h2.trip-section__title= startLocation
+                        if locations.length
+                            ol.trip-route
+                                each location in locations
+                                    li
+                                        span= `Day ${location.day}`
+                                        strong= location.description
+                                        small= location.address
+                        else
+                            p.trip-muted This trip route will be published soon.
+
+            section.trip-cta
+                .trip-cta__images
+                    if heroImage
+                        img(src=heroImage, alt='')
+                    if galleryImages[0]
+                        img(src=`/img/trips/${galleryImages[0]}`, alt='')
+                .trip-cta__content
+                    h2.trip-section__title Ready for #{trip.destination}?
+                    p.trip-muted= `${trip.duration} days. ${locations.length || 1} curated stops. A practical itinerary built for curious travelers.`
+                    .trip-price-row
+                        if trip.priceDiscount
+                            span.trip-price-row__current= `$${trip.priceDiscount}`
+                            span.trip-price-row__old= `$${trip.price}`
+                        else
+                            span.trip-price-row__current= `$${currentPrice}`
+                        span.trip-price-row__text per person
+                    a.btn.btn--green(href='#') Book trip now
+    else
+        main.trip-detail
+            section.trip-section
+                h1.trip-hero__title Trip not found
+                p.trip-muted The trip you requested could not be found.
+                a.btn.btn--green(href='/') Back to all trips
+
+block scripts
+    script(src='/js/leaflet.js')

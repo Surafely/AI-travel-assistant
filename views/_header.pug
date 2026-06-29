@@ -1,7 +1,23 @@
 nav.overview-nav(aria-label='Main')
     a.overview-brand(href='/')
         span.logo-icon(aria-hidden='true') ✈
-        | AI Travel
+        span.overview-brand__text
+            strong AI Travel
+            small Knowledge Assistant
+
+    .overview-links
+        a.overview-link(href='/') Trips
+        a.overview-link(href='/index.html') Assistant
+
     .auth-bar
-        a.btn-auth.btn-auth--ghost(href='/') Chat
-        a.btn-auth.btn-auth--solid(href='#') Book now
+        if user
+            a.nav-user(href='/me' aria-label='Your account')
+                img.nav-user__img(
+                    src=`/img/users/${user.photo || 'default-user.jpg'}`,
+                    alt=`Photo of ${user.name}`
+                )
+                span.nav-user__name= user.name.split(' ')[0]
+            a.btn-auth.btn-auth--ghost.nav__el--logout Log out
+        else
+            a.btn-auth.btn-auth--ghost(href='/login') Log in
+            a.btn-auth.btn-auth--solid(href='/') Sign in

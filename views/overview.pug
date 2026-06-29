@@ -13,7 +13,7 @@ block content
                             ? new Date(trip.startDates[0]).toLocaleString('en-US', { month: 'long', year: 'numeric' })
                             : 'Flexible dates';
                         const stopCount = trip.locations ? trip.locations.length : 0;
-                        const detailsUrl = '/trip';
+                        const detailsUrl = `/trip/${trip.slug}`;
 
                     .card
                         .card__header

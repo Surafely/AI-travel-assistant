@@ -26,29 +26,76 @@ const handleJWTError = () =>
 const handleJWTExpiredError = () =>
   new AppError('Expired token. Please login again.', 401);
 
-const sendErrorDev = (err, res) => {
-  res.status(err.statusCode).json({
-    status: err.status,
-    error: err,
-    message: err.message,
-    stack: err.stack,
-  });
+const getRenderErrorContent = (err) => {
+  if (err.statusCode === 404) {
+    return {
+      title: 'Page not found',
+      msg: 'The page you are looking for does not exist. Please check the URL or return to the homepage.',
+    };
+  }
+
+  if (err.isOperational) {
+    return {
+      title: 'Something went wrong !',
+      msg: err.message,
+    };
+  }
+
+  return {
+    title: 'Something went wrong !',
+    msg: 'Please try again later.',
+  };
 };
 
-const sendErrorProd = (err, res) => {
-  if (err.isOperational) {
+const sendErrorDev = (err, req, res) => {
+  if (req.originalUrl.startsWith('/api')) {
     res.status(err.statusCode).json({
       status: err.status,
+      error: err,
       message: err.message,
+      stack: err.stack,
     });
   } else {
     console.log('Error 💥💥💥', err);
 
-    res.status(500).json({
+    const { title, msg } = getRenderErrorContent(err);
+
+    res.status(err.statusCode).render('error', {
+      title,
+      msg,
+    });
+  }
+};
+
+const sendErrorProd = (err, req, res) => {
+  // A. API
+  if (req.originalUrl.startsWith('/api')) {
+    if (err.isOperational) {
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+      });
+    }
+
+    console.log('Error 💥💥💥', err);
+
+    return res.status(500).json({
       status: 'error',
       message: 'Something went very wrong !',
     });
   }
+
+  // B. FOR RENDERED
+  if (!err.isOperational) {
+    console.log('Error 💥💥💥', err);
+  }
+
+  const { title, msg } = getRenderErrorContent(err);
+
+  return res.status(err.statusCode).render('error', {
+    title,
+    msg,
+  });
 };
 
 module.exports = (err, req, res, next) => {
@@ -56,7 +103,7 @@ module.exports = (err, req, res, next) => {
   err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
-    sendErrorDev(err, res);
+    sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV === 'production') {
     let error = Object.create(err);
 
@@ -68,6 +115,6 @@ module.exports = (err, req, res, next) => {
     if (error.name === 'TokenExpiredError')
       error = handleJWTExpiredError(error);
 
-    sendErrorProd(error, res);
+    sendErrorProd(error, req, res);
   }
 };
