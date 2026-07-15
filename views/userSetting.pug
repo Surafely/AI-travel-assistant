@@ -1,0 +1,121 @@
+extends base
+
+mixin navItem(link, text, marker, active)
+  li.account-nav__item(class=active ? 'account-nav__item--active' : '')
+    a(href=link)
+      span.account-nav__marker= marker
+      span= text
+
+block content
+  -
+    const firstName = user.name ? user.name.split(' ')[0] : 'Traveler';
+    const initials = user.name
+      ? user.name.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase()
+      : 'AT';
+    const photo = user.photo || 'default-user.jpg';
+    const roleLabel = user.role === 'admin' ? 'Admin account' : 'Traveler account';
+
+  main.account-page
+    section.account-hero
+      .account-hero__profile
+        img.account-hero__photo(src=`/img/users/${photo}` alt=`Photo of ${user.name}`)
+        .account-hero__text
+          p.overview-kicker= roleLabel
+          h1.account-hero__title= `Welcome, ${firstName}`
+          p.account-hero__copy Keep your profile current so trip planning, saved itineraries, and account security stay in one clean place.
+      .account-hero__badge(aria-hidden='true')= initials
+
+    .user-view
+      aside.user-view__menu
+        nav.account-nav(aria-label='Account')
+          p.account-nav__label Account
+          ul.account-nav__list
+            +navItem('/me', 'Profile settings', '01', true)
+            +navItem('/bookmarks', 'Saved trips', '02', false)
+
+          if user.role === 'admin'
+            p.account-nav__label Admin
+            ul.account-nav__list
+              +navItem('/manage-trips', 'Manage trips', 'A1', false)
+              +navItem('/manage-users', 'Manage users', 'A2', false)
+
+      .user-view__content
+        .settings-grid
+          .settings-card
+            .settings-card__header
+              p.overview-kicker Profile
+              h2.settings-card__title Account details
+              p.settings-card__copy Update the name, email, and avatar shown across your travel workspace.
+
+            form.form.form-user-data(enctype='multipart/form-data')
+              .profile-picture
+                img.form__user-photo(
+                  src=`/img/users/${photo}`
+                  alt='Profile Photo'
+                )
+                .profile-picture__controls
+                  span.profile-picture__name= user.name
+                  input#photo.form__upload(
+                    type='file'             
+                    name='photo'
+                    accept='image/*'
+                  )
+                  label.btn.btn--small.btn--green(for='photo')
+                    | Change photo
+
+              .form__group
+                label.form__label(for='name') Full name
+                input#name.form__input(
+                  type='text'
+                  name='name'
+                  value=user.name
+                  required
+                )
+
+              .form__group
+                label.form__label(for='email') Email address
+                input#email.form__input(
+                  type='email'
+                  name='email'
+                  value=user.email
+                  required
+                )
+
+              .form__group
+                button.btn.btn--green(type='submit')
+                  | Save changes
+
+          .settings-card
+            .settings-card__header
+              p.overview-kicker Security
+              h2.settings-card__title Change password
+              p.settings-card__copy Choose a strong password before your next itinerary deep dive.
+
+            form.form.form-user-password
+              .form__group
+                label.form__label(for='password-current') Current password
+                input#password-current.form__input(
+                  type='password'
+                  placeholder='••••••••'
+                  required
+                )
+
+              .form__group
+                label.form__label(for='password') New password
+                input#password.form__input(
+                  type='password'
+                  placeholder='••••••••'
+                  required
+                )
+
+              .form__group
+                label.form__label(for='password-confirm') Confirm password
+                input#password-confirm.form__input(
+                  type='password'
+                  placeholder='••••••••'
+                  required
+                )
+
+              .form__group
+                button.btn.btn--green.btn--save-password(type='submit')
+                  | Update password

@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
-const sendEmail = require('../utils/email');
+const Email = require('../utils/email');
 
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -48,6 +48,16 @@ exports.signup = catchAsync(async (req, res, next) => {
     role: req.body.role,
   });
 
+  const url = `${req.protocol}://${req.get('host')}/me`;
+  console.log(url);
+
+  try {
+    const email = new Email(newUser, url);
+    await email.sendWelcome();
+  } catch (err) {
+    console.error('Welcome email could not be sent:', err.message);
+  }
+
   createSendToken(newUser, 201, res);
 });
 
@@ -84,15 +94,17 @@ exports.login = catchAsync(async (req, res, next) => {
 
   // Check password
   const correct = await user.correctPassword(password, user.password);
+  const passwordWasStoredPlainText = !correct && password === user.password;
 
   // Wrong password
-  if (!correct) {
+  if (!correct && !passwordWasStoredPlainText) {
     await user.incLoginAttempts();
 
     return next(new AppError('Incorrect email or password!', 401));
   }
 
   // Successful login
+  if (passwordWasStoredPlainText) user.password = password;
   user.loginAttempts = 0;
   user.lockUntil = undefined;
 
@@ -150,6 +162,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   req.user = currentUser;
+  res.locals.user = currentUser;
   next();
 });
 
@@ -202,15 +215,11 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   // SEND IT TO THE USER'S EMAIL
-  const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
-  const message = `Forget your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\n If you didn't forget your password, please ignore this email.`;
 
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Your reset token message (valid for 10 min)',
-      message,
-    });
+    const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
+    const email = new Email(user, resetURL);
+    await email.sendPasswordReset();
 
     res.status(200).json({
       status: 'success',
@@ -263,7 +272,14 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.user.id).select('+password');
 
   // CHECK IF POSTED PASSWORD IS CORRECT
-  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+  const currentPasswordCorrect = await user.correctPassword(
+    req.body.passwordCurrent,
+    user.password,
+  );
+  const currentPasswordWasStoredPlainText =
+    !currentPasswordCorrect && req.body.passwordCurrent === user.password;
+
+  if (!currentPasswordCorrect && !currentPasswordWasStoredPlainText) {
     return next(new AppError('Your current password is wrong.', 401));
   }
 

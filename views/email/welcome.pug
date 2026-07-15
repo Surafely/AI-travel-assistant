@@ -1,0 +1,28 @@
+extends baseEmail
+
+block content
+  p Hi #{firstName},
+  p Welcome to AI Travel Knowledge Assistant. Your travel workspace is ready.
+  p Explore curated trip ideas, compare destinations, and keep your profile current so planning feels personal from the first search.
+  table.btn.btn-primary(
+    role='presentation',
+    border='0',
+    cellpadding='0',
+    cellspacing='0'
+  )
+    tbody
+      tr
+        td(align='left')
+          table(
+            role='presentation',
+            border='0',
+            cellpadding='0',
+            cellspacing='0'
+          )
+            tbody
+              tr
+                td
+                  a(href=`${url}`, target='_blank') Open your travel workspace
+  p Start by updating your profile, then browse trips or ask the assistant for destination ideas, culture notes, visa basics, and itinerary help.
+  p If you need a hand planning your next trip, just jump back into the app.
+  p - Surafel Yigezu, Founder

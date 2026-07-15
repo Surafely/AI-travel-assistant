@@ -32,7 +32,13 @@ router
 router
   .route('/:id')
   .get(tripController.getTrip)
-  .patch(tripController.updateTrip)
+  .patch(
+    authController.protect,
+    authController.restrictTo('admin'),
+    tripController.uploadTripImages,
+    tripController.resizeTripImages,
+    tripController.updateTrip,
+  )
   .delete(
     authController.protect,
     authController.restrictTo('admin'),

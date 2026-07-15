@@ -33,3 +33,10 @@ exports.getLoginForm = (req, res) => {
     page: 'login',
   });
 };
+
+exports.getAccount = (req, res) => {
+  res.status(200).render('userSetting', {
+    title: 'Your Account',
+    page: 'account',
+  });
+};

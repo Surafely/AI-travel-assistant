@@ -16,13 +16,21 @@ const viewRouter = require('./routes/viewRoutes');
 const authController = require('./controllers/authController');
 
 const app = express();
+const chromeDevToolsUrl = '/.well-known/appspecific/com.chrome.devtools.json';
+const skipChromeDevToolsRequest = (req) => req.url === chromeDevToolsUrl;
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 app.set('query parser', 'extended');
 
-//                                               GLOBAL MIDDLEWARES
+//                          GLOBAL MIDDLEWARES
+
+app.use(
+  morgan('dev', {
+    skip: skipChromeDevToolsRequest,
+  }),
+);
 
 // SET SECURITY HTTP HEADERS
 app.use(
@@ -50,7 +58,7 @@ app.use(
 
 //DEVELOPMENT LOGGING
 if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
+  app.use(morgan('dev', { skip: skipChromeDevToolsRequest }));
 }
 
 console.log(
@@ -78,6 +86,8 @@ app.use((req, res, next) => {
 });
 
 //ROUTES
+app.get(chromeDevToolsUrl, (req, res) => res.status(204).end());
+
 app.use(authController.isLoggedIn);
 app.use('/', viewRouter);
 

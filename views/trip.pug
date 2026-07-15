@@ -92,7 +92,7 @@ block content
                         p.trip-copy More trip details are coming soon.
 
             if galleryImages.length
-                section.trip-section.trip-section--gallery
+                section.trip-section.trip-section--media.trip-section--gallery
                     .trip-gallery(aria-label='Trip photos')
                         each image, index in galleryImages
                             figure.trip-gallery__item
@@ -102,7 +102,7 @@ block content
                                     loading=index === 0 ? 'eager' : 'lazy'
                                 )
 
-            section.trip-section
+            section.trip-section.trip-section--media
                 .trip-map
                     #map.trip-map__canvas(data-locations=JSON.stringify(locations))
                     .trip-map__content
