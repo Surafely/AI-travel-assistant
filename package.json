@@ -15,17 +15,18 @@
   "type": "commonjs",
   "main": "app.js",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.19.0"
   },
   "scripts": {
     "start": "nodemon server.js",
-    "start:prod": "NODE_ENV=production nodemon server.js",
+    "start:prod": "NODE_ENV=production node server.js",
     "debug": "ndb server.js",
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js --public-url /js/",
     "bundle:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js --public-url /js/"
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
+    "@google/genai": "^2.12.0",
     "axios": "^1.18.1",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",

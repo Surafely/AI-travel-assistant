@@ -1,0 +1,21 @@
+{
+  "watch": [
+    "server.js",
+    "app.js",
+    "controllers",
+    "models",
+    "routes",
+    "services",
+    "utils",
+    "views"
+  ],
+  "ext": "js,json,pug",
+  "ignore": [
+    "node_modules",
+    "public/img",
+    "public/js/bundle.js",
+    "public/js/bundle.js.map",
+    ".cache",
+    "*.log"
+  ]
+}

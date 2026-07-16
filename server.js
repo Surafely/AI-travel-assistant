@@ -12,13 +12,20 @@ dotenv.config({ path: './config.env' });
 
 const app = require('./app');
 
+if (!process.env.DATABASE_URI || !process.env.DATABASE_PASSWORD) {
+  console.error('DATABASE_URI and DATABASE_PASSWORD must be set in config.env');
+  process.exit(1);
+}
+
 const DB = process.env.DATABASE_URI.replace(
   '<PASSWORD>',
   process.env.DATABASE_PASSWORD,
 );
 
 mongoose
-  .connect(DB)
+  .connect(DB, {
+    serverSelectionTimeoutMS: 10000,
+  })
   .then(() => {
     console.log('DB Connected Successfully !!!');
   })

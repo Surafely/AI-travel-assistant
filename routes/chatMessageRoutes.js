@@ -13,8 +13,8 @@ router
 
 router.route('/:id').delete(chatMessageController.deleteMessage);
 
+module.exports = router;
+
 // router
 //   .route('/conversation/:conversationId')
 //   .get(chatMessageController.getConversationMessages);
-
-module.exports = router;
