@@ -1,19 +1,22 @@
 const { GoogleGenAI } = require('@google/genai');
-
-// console.log('GEMINI_API_KEY', process.env.GEMINI_API_KEY);
-// console.log('AI_MODEL', process.env.AI_MODEL);
+const { prompts } = require('./prompts');
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
-const MODEL = process.env.AI_MODEL;
+const MODEL = process.env.AI_MODEL || 'gemini-2.5-flash';
 
-const generateResponse = async (contents) => {
+const generateResponse = async (history) => {
   try {
     const response = await ai.models.generateContent({
       model: MODEL,
-      contents,
+
+      config: {
+        systemInstruction: prompts.system,
+      },
+
+      contents: history,
     });
 
     return response.text;
