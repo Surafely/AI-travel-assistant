@@ -1,5 +1,5 @@
 const { GoogleGenAI } = require('@google/genai');
-const { prompts } = require('./prompts');
+// const { prompts } = require('./prompts');
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -7,13 +7,13 @@ const ai = new GoogleGenAI({
 
 const MODEL = process.env.AI_MODEL || 'gemini-2.5-flash';
 
-const generateResponse = async (history) => {
+const generateContent = async ({ history, systemInstruction }) => {
   try {
     const response = await ai.models.generateContent({
       model: MODEL,
 
       config: {
-        systemInstruction: prompts.system,
+        systemInstruction,
       },
 
       contents: history,
@@ -27,5 +27,5 @@ const generateResponse = async (history) => {
 };
 
 module.exports = {
-  generateResponse,
+  generateContent,
 };
