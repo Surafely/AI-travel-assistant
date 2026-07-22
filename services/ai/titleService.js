@@ -1,18 +1,23 @@
-const { generateContent } = require('./gemini');
-const prompts = require('./prompts');
+// const { generateContent } = require('./gemini');
+// const prompts = require('./prompts');
 
-exports.generateConversationTitle = async (content) =>
-  generateContent({
-    history: [
-      {
-        role: 'user',
-        parts: [
-          {
-            text: content,
-          },
-        ],
-      },
-    ],
+const ai = require('./AIClient');
 
-    systemInstruction: prompts.generateTitle,
-  });
+const generateConversationTitle = async (content) => ai.generateTitle(content);
+
+const updateConversationTitle = async (conversation, firstMessage) => {
+  if (conversation.title !== 'New travel conversation') {
+    return;
+  }
+
+  const title = await generateConversationTitle(firstMessage);
+
+  conversation.title = title.trim();
+
+  await conversation.save();
+};
+
+module.exports = {
+  generateConversationTitle,
+  updateConversationTitle,
+};

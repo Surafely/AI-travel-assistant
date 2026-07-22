@@ -1,7 +1,8 @@
-const { generateContent } = require('./gemini');
+const ai = require('./AIClient');
 const { buildGeminiHistory } = require('./conversation');
-const prompts = require('./prompts');
-const { getConversationHistory } = require('./conversationHistoryService');
+const {
+  getConversationHistory,
+} = require('../conversation/conversationHistoryService');
 
 const generateConversationSummary = async (messages) => {
   const history = buildGeminiHistory({
@@ -9,10 +10,7 @@ const generateConversationSummary = async (messages) => {
     messages,
   });
 
-  return generateContent({
-    history,
-    systemInstruction: prompts.summarizeConversation,
-  });
+  return ai.summarize(history);
 };
 
 exports.updateConversationSummary = async (conversation) => {

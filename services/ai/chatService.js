@@ -1,18 +1,19 @@
 const ChatMessage = require('../../models/chatMessageModel');
 // const Conversation = require('../../models/conversationModel');
-const prompts = require('./prompts');
-
+const ai = require('./AIClient');
 const AppError = require('../../utils/appError');
 
-const { generateContent } = require('./gemini');
 const { buildGeminiHistory } = require('./conversation');
-const { saveUserMessage, saveAssistantMessage } = require('./messageService');
-const { buildConversationContext } = require('./contextService');
+const {
+  saveUserMessage,
+  saveAssistantMessage,
+} = require('../conversation/messageService');
+const { getConversationContext } = require('../conversation/contextService');
 const {
   checkConversationOwner,
   updateConversationTimestamp,
-} = require('./conversationService');
-const { generateConversationTitle } = require('./titleService');
+} = require('../conversation/conversationService');
+const { updateConversationTitle } = require('./titleService');
 const { updateConversationSummary } = require('./summaryService');
 
 exports.createMessage = async (req) => {
@@ -28,10 +29,6 @@ exports.createMessage = async (req) => {
     req.user.id,
   );
 
-  if (!conversation) {
-    throw new AppError('Conversation not found or you do not own it.', 404);
-  }
-
   // Save the user's message
   const userMessage = await saveUserMessage(
     conversationId,
@@ -40,16 +37,13 @@ exports.createMessage = async (req) => {
   );
 
   // Retrieve the conversation history
-  const context = await buildConversationContext(conversation);
+  const context = await getConversationContext(conversation);
 
   // Convert messages into Gemini format
   const history = buildGeminiHistory(context);
 
   // Generate AI response
-  const aiReply = await generateContent({
-    history,
-    systemInstruction: prompts.system,
-  });
+  const aiReply = await ai.chat(history);
 
   // Save the AI response
   const assistantMessage = await saveAssistantMessage(
@@ -57,6 +51,9 @@ exports.createMessage = async (req) => {
     aiReply,
     process.env.AI_MODEL,
   );
+
+  // Save the title
+  await updateConversationTitle(conversation, req.body.content);
 
   // Generate summary if needed
   const totalMessages = await ChatMessage.countDocuments({
@@ -67,14 +64,6 @@ exports.createMessage = async (req) => {
     await updateConversationSummary(conversation);
   }
 
-  if (conversation.title === 'New travel conversation') {
-    const title = await generateConversationTitle(req.body.content);
-
-    conversation.title = title.trim();
-
-    await conversation.save();
-  }
-
   // Update conversation timestamp
   await updateConversationTimestamp(conversationId);
 
@@ -83,3 +72,8 @@ exports.createMessage = async (req) => {
     assistantMessage,
   };
 };
+
+exports.getConversationMessages = async (conversationId) =>
+  ChatMessage.find({
+    conversation: conversationId,
+  }).sort('createdAt');

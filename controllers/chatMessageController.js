@@ -5,7 +5,9 @@ const catchAsync = require('../utils/catchAsync');
 const chatService = require('../services/ai/chatService');
 
 exports.getConversationMessages = catchAsync(async (req, res, next) => {
-  const result = await chatService.getConversationMessages(req);
+  const result = await chatService.getConversationMessages(
+    req.params.conversationId,
+  );
 
   res.status(200).json({
     status: 'success',

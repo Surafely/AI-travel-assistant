@@ -21,6 +21,7 @@ exports.saveAssistantMessage = async (conversationId, content, model) => {
     role: 'assistant',
     content,
     metadata: {
+      createdBy: 'gemini',
       model,
     },
   });
