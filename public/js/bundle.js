@@ -8436,7 +8436,147 @@ const updateSettings = async (data, type) => {
   }
 };
 exports.updateSettings = updateSettings;
-},{"axios":"../../node_modules/axios/index.js","./alert":"alert.js"}],"index.js":[function(require,module,exports) {
+},{"axios":"../../node_modules/axios/index.js","./alert":"alert.js"}],"api/conversationAPI.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getConversations = exports.createConversation = void 0;
+var _axios = _interopRequireDefault(require("axios"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+const getConversations = async () => {
+  try {
+    const res = await _axios.default.get('/api/v1/conversations');
+    return res.data.data.conversations;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+exports.getConversations = getConversations;
+const createConversation = async () => {
+  try {
+    const res = await _axios.default.post('/api/v1/conversations');
+    return res.data.data.conversation;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+exports.createConversation = createConversation;
+},{"axios":"../../node_modules/axios/index.js"}],"api/messageAPI.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.sendMessage = exports.getMessages = void 0;
+var _axios = _interopRequireDefault(require("axios"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+const getMessages = async conversationId => {
+  try {
+    const res = await _axios.default.get("/api/v1/conversations/".concat(conversationId, "/messages"));
+    return res.data.data.data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+exports.getMessages = getMessages;
+const sendMessage = async (conversationId, content) => {
+  try {
+    const res = await _axios.default.post("/api/v1/conversations/".concat(conversationId, "/messages"), {
+      content
+    });
+    return res.data.data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+exports.sendMessage = sendMessage;
+},{"axios":"../../node_modules/axios/index.js"}],"assistant/chatRenderer.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.renderMessages = void 0;
+const renderMessages = messages => {
+  const container = document.getElementById('messages');
+  if (!container) return;
+  container.innerHTML = '';
+  messages.forEach(message => {
+    const isUser = message.role === 'user';
+    const html = "\n      <div class=\"message ".concat(isUser ? 'message--user' : 'message--assistant', "\">\n        <div class=\"message__bubble\">\n          ").concat(message.content, "\n        </div>\n      </div>\n    ");
+    container.insertAdjacentHTML('beforeend', html);
+  });
+  container.scrollTop = container.scrollHeight;
+};
+exports.renderMessages = renderMessages;
+},{}],"assistant/chat.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.loadConversation = void 0;
+var _messageAPI = require("../api/messageAPI");
+var _chatRenderer = require("./chatRenderer");
+const loadConversation = async conversationId => {
+  try {
+    const messages = await (0, _messageAPI.getMessages)(conversationId);
+    console.log(messages);
+  } catch (err) {
+    console.error(err);
+  }
+};
+exports.loadConversation = loadConversation;
+},{"../api/messageAPI":"api/messageAPI.js","./chatRenderer":"assistant/chatRenderer.js"}],"assistant/renderer.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.renderConversationList = void 0;
+var _chat = require("./chat");
+const renderConversationList = conversations => {
+  const list = document.getElementById('conversation-list');
+  if (!list) return;
+  list.innerHTML = '';
+  conversations.forEach(conversation => {
+    const html = "\n        <li\n          class=\"conversation-item\"\n          data-id=\"".concat(conversation._id, "\"\n        >\n          ").concat(conversation.title, "\n        </li>\n      ");
+    list.insertAdjacentHTML('beforeend', html);
+  });
+  document.querySelectorAll('.conversation-item').forEach(item => {
+    item.addEventListener('click', () => {
+      (0, _chat.loadConversation)(item.dataset.id);
+    });
+  });
+};
+exports.renderConversationList = renderConversationList;
+},{"./chat":"assistant/chat.js"}],"assistant/sidebar.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initSidebar = void 0;
+var _conversationAPI = require("../api/conversationAPI");
+var _renderer = require("./renderer");
+const initSidebar = async () => {
+  try {
+    console.log('initSidebar called');
+    const conversations = await (0, _conversationAPI.getConversations)();
+    console.log(conversations);
+    (0, _renderer.renderConversationList)(conversations);
+  } catch (err) {
+    console.error(err);
+  }
+};
+exports.initSidebar = initSidebar;
+},{"../api/conversationAPI":"api/conversationAPI.js","./renderer":"assistant/renderer.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 require("core-js/modules/es7.array.flat-map.js");
@@ -8451,7 +8591,15 @@ require("core-js/modules/web.dom.iterable.js");
 var _leaflet = require("./leaflet");
 var _login = require("./login");
 var _updateSattings = require("./updateSattings");
+var _sidebar = require("./assistant/sidebar");
 /* eslint-disable */
+
+console.log('Index.js loaded');
+const assistantPage = document.querySelector('.assistant');
+if (assistantPage) {
+  console.log('Assistant page detected');
+  (0, _sidebar.initSidebar)();
+}
 
 // DOM ELEMENTS
 const leaflet = document.getElementById('map');
@@ -8505,7 +8653,13 @@ if (formPassword) {
   document.querySelector('#password').value = '';
   document.querySelector('#password-confirm').value = '';
 }
-},{"core-js/modules/es7.array.flat-map.js":"../../node_modules/core-js/modules/es7.array.flat-map.js","core-js/modules/es6.array.sort.js":"../../node_modules/core-js/modules/es6.array.sort.js","core-js/modules/es7.promise.finally.js":"../../node_modules/core-js/modules/es7.promise.finally.js","core-js/modules/es7.symbol.async-iterator.js":"../../node_modules/core-js/modules/es7.symbol.async-iterator.js","core-js/modules/es7.string.trim-left.js":"../../node_modules/core-js/modules/es7.string.trim-left.js","core-js/modules/es7.string.trim-right.js":"../../node_modules/core-js/modules/es7.string.trim-right.js","core-js/modules/web.timers.js":"../../node_modules/core-js/modules/web.timers.js","core-js/modules/web.immediate.js":"../../node_modules/core-js/modules/web.immediate.js","core-js/modules/web.dom.iterable.js":"../../node_modules/core-js/modules/web.dom.iterable.js","./leaflet":"leaflet.js","./login":"login.js","./updateSattings":"updateSattings.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+
+// const assistantPage = document.querySelector('.assistant');
+
+// if (assistantPage) {
+//   initSidebar();
+// }
+},{"core-js/modules/es7.array.flat-map.js":"../../node_modules/core-js/modules/es7.array.flat-map.js","core-js/modules/es6.array.sort.js":"../../node_modules/core-js/modules/es6.array.sort.js","core-js/modules/es7.promise.finally.js":"../../node_modules/core-js/modules/es7.promise.finally.js","core-js/modules/es7.symbol.async-iterator.js":"../../node_modules/core-js/modules/es7.symbol.async-iterator.js","core-js/modules/es7.string.trim-left.js":"../../node_modules/core-js/modules/es7.string.trim-left.js","core-js/modules/es7.string.trim-right.js":"../../node_modules/core-js/modules/es7.string.trim-right.js","core-js/modules/web.timers.js":"../../node_modules/core-js/modules/web.timers.js","core-js/modules/web.immediate.js":"../../node_modules/core-js/modules/web.immediate.js","core-js/modules/web.dom.iterable.js":"../../node_modules/core-js/modules/web.dom.iterable.js","./leaflet":"leaflet.js","./login":"login.js","./updateSattings":"updateSattings.js","./assistant/sidebar":"assistant/sidebar.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -8530,7 +8684,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49242" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50471" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

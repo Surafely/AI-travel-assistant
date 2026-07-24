@@ -1,8 +1,19 @@
 /* eslint-disable */
+
 import '@babel/polyfill';
 import { displayMap } from './leaflet';
 import { login, logout } from './login';
 import { updateSettings } from './updateSattings';
+import { initSidebar } from './assistant/sidebar';
+
+console.log('Index.js loaded');
+
+const assistantPage = document.querySelector('.assistant');
+
+if (assistantPage) {
+  console.log('Assistant page detected');
+  initSidebar();
+}
 
 // DOM ELEMENTS
 const leaflet = document.getElementById('map');
@@ -64,3 +75,9 @@ if (formPassword) {
   document.querySelector('#password').value = '';
   document.querySelector('#password-confirm').value = '';
 }
+
+// const assistantPage = document.querySelector('.assistant');
+
+// if (assistantPage) {
+//   initSidebar();
+// }

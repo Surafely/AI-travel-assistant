@@ -8,5 +8,6 @@ router.get('/', authController.isLoggedIn, viewsController.getOverview);
 router.get('/trip/:slug', authController.isLoggedIn, viewsController.getTrip);
 router.get('/login', authController.isLoggedIn, viewsController.getLoginForm);
 router.get('/me', authController.protect, viewsController.getAccount);
+router.get('/assistant', authController.protect, viewsController.getAssistant);
 
 module.exports = router;

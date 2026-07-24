@@ -40,3 +40,9 @@ exports.getAccount = (req, res) => {
     page: 'account',
   });
 };
+
+exports.getAssistant = (req, res) => {
+  res.status(200).render('assistant', {
+    title: 'AI Assistant',
+  });
+};

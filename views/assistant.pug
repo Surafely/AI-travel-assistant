@@ -1,0 +1,31 @@
+extends base
+
+block content
+    main.assistant
+
+        aside.assistant__sidebar
+
+            .assistant__sidebar-header
+                button.btn.btn--green.btn--new-chat(type='button')
+                    | + New Chat
+
+            ul#conversation-list.conversation-list
+
+        section.assistant__chat
+
+            header.assistant__chat-header
+                h2 AI Travel Assistant
+                p Your intelligent travel companion
+
+            #messages.messages
+
+            form.chat-form
+
+                input.chat-input(
+                    type='text'
+                    placeholder='Ask me anything about travel...'
+                    autocomplete='off'
+                )
+
+                button.btn.btn--green(type='submit')
+                    Send
