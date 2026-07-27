@@ -9,20 +9,24 @@ export const renderConversationList = (conversations) => {
 
   conversations.forEach((conversation) => {
     const html = `
-        <li
-          class="conversation-item"
-          data-id="${conversation._id}"
-        >
-          ${conversation.title}
-        </li>
-      `;
+      <li
+        class="conversation-item"
+        data-id="${conversation._id}"
+      >
+        ${conversation.title}
+      </li>
+    `;
 
     list.insertAdjacentHTML('beforeend', html);
   });
 
-  document.querySelectorAll('.conversation-item').forEach((item) => {
+  const items = list.querySelectorAll('.conversation-item');
+
+  items.forEach((item) => {
     item.addEventListener('click', () => {
-      loadConversation(item.dataset.id);
+      const conversationId = item.dataset.id;
+
+      loadConversation(conversationId);
     });
   });
 };

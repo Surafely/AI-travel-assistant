@@ -1,3 +1,6 @@
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
+
 export const renderMessages = (messages) => {
   const container = document.getElementById('messages');
 
@@ -11,7 +14,11 @@ export const renderMessages = (messages) => {
     const html = `
       <div class="message ${isUser ? 'message--user' : 'message--assistant'}">
         <div class="message__bubble">
-          ${message.content}
+          ${
+            isUser
+              ? message.content
+              : DOMPurify.sanitize(marked.parse(message.content))
+          }
         </div>
       </div>
     `;
