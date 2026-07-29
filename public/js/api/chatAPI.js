@@ -9,7 +9,7 @@ export const sendMessage = async (conversationId, content) => {
       },
     );
 
-    return res.data.data;
+    return res.data.data.data;
   } catch (err) {
     console.error(err);
     throw err;

@@ -12726,14 +12726,39 @@ var global = arguments[3];
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.renderMessages = void 0;
+exports.showThinking = exports.renderMessages = exports.removeThinking = exports.appendMessage = void 0;
 var _marked = require("marked");
 var _dompurify = _interopRequireDefault(require("dompurify"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+const appendMessage = message => {
+  const container = document.getElementById('messages');
+  if (!container) return;
+  const isUser = message.role === 'user';
+  const html = "\n    <div class=\"message ".concat(isUser ? 'message--user' : 'message--assistant', "\">\n      <div class=\"message__bubble\">\n        ").concat(isUser ? message.content : _dompurify.default.sanitize(_marked.marked.parse(message.content)), "\n      </div>\n    </div>\n  ");
+  container.insertAdjacentHTML('beforeend', html);
+  container.scrollTop = container.scrollHeight;
+};
+exports.appendMessage = appendMessage;
+const showThinking = () => {
+  const container = document.getElementById('messages');
+  if (!container) return;
+  container.insertAdjacentHTML('beforeend', "\n      <div\n        class=\"message message--assistant\"\n        id=\"thinking\"\n      >\n        <div class=\"message__bubble\">\n          \u2708\uFE0F AI Travel Assistant is thinking...\n        </div>\n      </div>\n    ");
+  container.scrollTop = container.scrollHeight;
+};
+exports.showThinking = showThinking;
+const removeThinking = () => {
+  var _document$getElementB;
+  (_document$getElementB = document.getElementById('thinking')) === null || _document$getElementB === void 0 || _document$getElementB.remove();
+};
+exports.removeThinking = removeThinking;
 const renderMessages = messages => {
   const container = document.getElementById('messages');
   if (!container) return;
   container.innerHTML = '';
+  if (messages.length === 0) {
+    container.innerHTML = "\n      <div class=\"chat-empty\">\n        <h2>\uD83D\uDC4B Welcome!</h2>\n        <p>Start planning your next trip by asking me anything.</p>\n      </div>\n    ";
+    return;
+  }
   messages.forEach(message => {
     const isUser = message.role === 'user';
     const html = "\n      <div class=\"message ".concat(isUser ? 'message--user' : 'message--assistant', "\">\n        <div class=\"message__bubble\">\n          ").concat(isUser ? message.content : _dompurify.default.sanitize(_marked.marked.parse(message.content)), "\n        </div>\n      </div>\n    ");
@@ -12742,19 +12767,30 @@ const renderMessages = messages => {
   container.scrollTop = container.scrollHeight;
 };
 exports.renderMessages = renderMessages;
-},{"marked":"../../node_modules/marked/lib/marked.umd.js","dompurify":"../../node_modules/dompurify/dist/purify.js"}],"assistant/chat.js":[function(require,module,exports) {
+},{"marked":"../../node_modules/marked/lib/marked.umd.js","dompurify":"../../node_modules/dompurify/dist/purify.js"}],"state/state.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.loadConversation = exports.activeConversationId = void 0;
+exports.state = void 0;
+const state = exports.state = {
+  conversations: [],
+  activeConversationId: null
+};
+},{}],"assistant/chat.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.loadConversation = void 0;
 var _messageAPI = require("../api/messageAPI");
 var _chatRenderer = require("./chatRenderer");
-let activeConversationId = exports.activeConversationId = null;
+var _state = require("../state/state.js");
 const loadConversation = async conversationId => {
   try {
-    exports.activeConversationId = activeConversationId = conversationId;
+    _state.state.activeConversationId = conversationId;
     const messages = await (0, _messageAPI.getMessages)(conversationId);
     (0, _chatRenderer.renderMessages)(messages);
   } catch (err) {
@@ -12762,7 +12798,7 @@ const loadConversation = async conversationId => {
   }
 };
 exports.loadConversation = loadConversation;
-},{"../api/messageAPI":"api/messageAPI.js","./chatRenderer":"assistant/chatRenderer.js"}],"assistant/renderer.js":[function(require,module,exports) {
+},{"../api/messageAPI":"api/messageAPI.js","./chatRenderer":"assistant/chatRenderer.js","../state/state.js":"state/state.js"}],"assistant/renderer.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -12796,18 +12832,126 @@ Object.defineProperty(exports, "__esModule", {
 exports.initSidebar = void 0;
 var _conversationAPI = require("../api/conversationAPI");
 var _renderer = require("./renderer");
+var _state = require("../state/state.js");
 const initSidebar = async () => {
   try {
-    console.log('initSidebar called');
-    const conversations = await (0, _conversationAPI.getConversations)();
-    console.log(conversations);
-    (0, _renderer.renderConversationList)(conversations);
+    _state.state.conversations = await (0, _conversationAPI.getConversations)();
+    (0, _renderer.renderConversationList)(_state.state.conversations);
   } catch (err) {
     console.error(err);
   }
 };
 exports.initSidebar = initSidebar;
-},{"../api/conversationAPI":"api/conversationAPI.js","./renderer":"assistant/renderer.js"}],"index.js":[function(require,module,exports) {
+},{"../api/conversationAPI":"api/conversationAPI.js","./renderer":"assistant/renderer.js","../state/state.js":"state/state.js"}],"api/chatAPI.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.sendMessage = void 0;
+var _axios = _interopRequireDefault(require("axios"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+const sendMessage = async (conversationId, content) => {
+  try {
+    const res = await _axios.default.post("/api/v1/conversations/".concat(conversationId, "/messages"), {
+      content
+    });
+    return res.data.data.data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+exports.sendMessage = sendMessage;
+},{"axios":"../../node_modules/axios/index.js"}],"assistant/chatForm.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initChatForm = void 0;
+var _chatAPI = require("../api/chatAPI");
+var _chat = require("./chat");
+var _chatRenderer = require("./chatRenderer");
+const initChatForm = () => {
+  const form = document.querySelector('.chat-form');
+  const input = document.querySelector('.chat-input');
+  if (!form || !input) return;
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const content = input.value.trim();
+    if (!content) return;
+    if (!_chat.activeConversationId) {
+      alert('Please select a conversation first.');
+      return;
+    }
+    input.value = '';
+    try {
+      // Show the user's message immediately
+      (0, _chatRenderer.appendMessage)({
+        role: 'user',
+        content
+      });
+
+      // Show the thinking indicator
+      (0, _chatRenderer.showThinking)();
+
+      // Send the request
+      const result = await (0, _chatAPI.sendMessage)(_chat.activeConversationId, content);
+
+      // Remove the thinking indicator
+      (0, _chatRenderer.removeThinking)();
+
+      // Show Gemini's reply
+      (0, _chatRenderer.appendMessage)(result.assistantMessage);
+    } catch (err) {
+      (0, _chatRenderer.removeThinking)();
+      (0, _chatRenderer.appendMessage)({
+        role: 'assistant',
+        content: '⚠️ Sorry, I could not reach the AI service. Please try again in a moment.'
+      });
+      console.error(err);
+    }
+  });
+};
+exports.initChatForm = initChatForm;
+},{"../api/chatAPI":"api/chatAPI.js","./chat":"assistant/chat.js","./chatRenderer":"assistant/chatRenderer.js"}],"assistant/newChat.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initNewChat = void 0;
+const _require = require('../api/conversationAPI'),
+  createConversation = _require.createConversation;
+const _require2 = require('./sidebar'),
+  initSidebar = _require2.initSidebar;
+const _require3 = require('./chat'),
+  activeConversationId = _require3.activeConversationId,
+  loadConversation = _require3.loadConversation;
+// import { createConversation } from '../api/conversationAPI';
+
+// import { initSidebar } from './sidebar';
+
+// import { activeConversationId } from './chat';
+
+const initNewChat = () => {
+  const button = document.querySelector('.btn--new-chat');
+  if (!button) return;
+  button.addEventListener('click', async () => {
+    try {
+      const conversation = await createConversation();
+      console.log('Created:', conversation);
+      await initSidebar();
+      console.log('Calling loadConversation');
+      await loadConversation(conversation._id);
+    } catch (err) {
+      console.error(err);
+    }
+  });
+};
+exports.initNewChat = initNewChat;
+},{"../api/conversationAPI":"api/conversationAPI.js","./sidebar":"assistant/sidebar.js","./chat":"assistant/chat.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 require("core-js/modules/es7.array.flat-map.js");
@@ -12823,13 +12967,18 @@ var _leaflet = require("./leaflet");
 var _login = require("./login");
 var _updateSattings = require("./updateSattings");
 var _sidebar = require("./assistant/sidebar");
+var _chatForm = require("./assistant/chatForm");
+var _newChat = require("./assistant/newChat");
 /* eslint-disable */
+// const displayMap = require('./leaflet')
 
 console.log('Index.js loaded');
 const assistantPage = document.querySelector('.assistant');
 if (assistantPage) {
   console.log('Assistant page detected');
   (0, _sidebar.initSidebar)();
+  (0, _chatForm.initChatForm)();
+  (0, _newChat.initNewChat)();
 }
 
 // DOM ELEMENTS
@@ -12890,7 +13039,7 @@ if (formPassword) {
 // if (assistantPage) {
 //   initSidebar();
 // }
-},{"core-js/modules/es7.array.flat-map.js":"../../node_modules/core-js/modules/es7.array.flat-map.js","core-js/modules/es6.array.sort.js":"../../node_modules/core-js/modules/es6.array.sort.js","core-js/modules/es7.promise.finally.js":"../../node_modules/core-js/modules/es7.promise.finally.js","core-js/modules/es7.symbol.async-iterator.js":"../../node_modules/core-js/modules/es7.symbol.async-iterator.js","core-js/modules/es7.string.trim-left.js":"../../node_modules/core-js/modules/es7.string.trim-left.js","core-js/modules/es7.string.trim-right.js":"../../node_modules/core-js/modules/es7.string.trim-right.js","core-js/modules/web.timers.js":"../../node_modules/core-js/modules/web.timers.js","core-js/modules/web.immediate.js":"../../node_modules/core-js/modules/web.immediate.js","core-js/modules/web.dom.iterable.js":"../../node_modules/core-js/modules/web.dom.iterable.js","./leaflet":"leaflet.js","./login":"login.js","./updateSattings":"updateSattings.js","./assistant/sidebar":"assistant/sidebar.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"core-js/modules/es7.array.flat-map.js":"../../node_modules/core-js/modules/es7.array.flat-map.js","core-js/modules/es6.array.sort.js":"../../node_modules/core-js/modules/es6.array.sort.js","core-js/modules/es7.promise.finally.js":"../../node_modules/core-js/modules/es7.promise.finally.js","core-js/modules/es7.symbol.async-iterator.js":"../../node_modules/core-js/modules/es7.symbol.async-iterator.js","core-js/modules/es7.string.trim-left.js":"../../node_modules/core-js/modules/es7.string.trim-left.js","core-js/modules/es7.string.trim-right.js":"../../node_modules/core-js/modules/es7.string.trim-right.js","core-js/modules/web.timers.js":"../../node_modules/core-js/modules/web.timers.js","core-js/modules/web.immediate.js":"../../node_modules/core-js/modules/web.immediate.js","core-js/modules/web.dom.iterable.js":"../../node_modules/core-js/modules/web.dom.iterable.js","./leaflet":"leaflet.js","./login":"login.js","./updateSattings":"updateSattings.js","./assistant/sidebar":"assistant/sidebar.js","./assistant/chatForm":"assistant/chatForm.js","./assistant/newChat":"assistant/newChat.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;

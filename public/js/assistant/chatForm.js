@@ -1,6 +1,9 @@
 import { sendMessage } from '../api/chatAPI';
+import { activeConversationId } from './chat';
 
-export const initChatForm = (conversationId) => {
+import { appendMessage, showThinking, removeThinking } from './chatRenderer';
+
+export const initChatForm = () => {
   const form = document.querySelector('.chat-form');
   const input = document.querySelector('.chat-input');
 
@@ -13,13 +16,39 @@ export const initChatForm = (conversationId) => {
 
     if (!content) return;
 
+    if (!activeConversationId) {
+      alert('Please select a conversation first.');
+      return;
+    }
+
     input.value = '';
 
     try {
-      await sendMessage(conversationId, content);
+      // Show the user's message immediately
+      appendMessage({
+        role: 'user',
+        content,
+      });
 
-      console.log('Message sent!');
+      // Show the thinking indicator
+      showThinking();
+
+      // Send the request
+      const result = await sendMessage(activeConversationId, content);
+
+      // Remove the thinking indicator
+      removeThinking();
+
+      // Show Gemini's reply
+      appendMessage(result.assistantMessage);
     } catch (err) {
+      removeThinking();
+      appendMessage({
+        role: 'assistant',
+        content:
+          '⚠️ Sorry, I could not reach the AI service. Please try again in a moment.',
+      });
+
       console.error(err);
     }
   });

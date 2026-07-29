@@ -1,14 +1,12 @@
 import { getMessages } from '../api/messageAPI';
 import { renderMessages } from './chatRenderer';
-
-export let activeConversationId = null;
+import { state } from '../state/state.js';
 
 export const loadConversation = async (conversationId) => {
   try {
-    activeConversationId = conversationId;
+    state.activeConversationId = conversationId;
 
     const messages = await getMessages(conversationId);
-
     renderMessages(messages);
   } catch (err) {
     console.error(err);

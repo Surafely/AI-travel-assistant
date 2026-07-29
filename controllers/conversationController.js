@@ -3,10 +3,12 @@ const AppError = require('../utils/appError');
 const Conversation = require('../models/conversationModel');
 
 exports.createConversation = catchAsync(async (req, res, next) => {
+  // console.log('USER:', req.user);
+
   const conversation = await Conversation.create({
     user: req.user.id,
-    trip: req.body.trip,
-    title: req.body.title,
+    // trip: req.body.trip,
+    // title: req.body.title,
   });
 
   res.status(201).json({
