@@ -8465,7 +8465,18 @@ const createConversation = async () => {
   }
 };
 exports.createConversation = createConversation;
-},{"axios":"../../node_modules/axios/index.js"}],"api/messageAPI.js":[function(require,module,exports) {
+},{"axios":"../../node_modules/axios/index.js"}],"state/state.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.state = void 0;
+const state = exports.state = {
+  conversations: [],
+  activeConversationId: null
+};
+},{}],"api/messageAPI.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -12767,18 +12778,7 @@ const renderMessages = messages => {
   container.scrollTop = container.scrollHeight;
 };
 exports.renderMessages = renderMessages;
-},{"marked":"../../node_modules/marked/lib/marked.umd.js","dompurify":"../../node_modules/dompurify/dist/purify.js"}],"state/state.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.state = void 0;
-const state = exports.state = {
-  conversations: [],
-  activeConversationId: null
-};
-},{}],"assistant/chat.js":[function(require,module,exports) {
+},{"marked":"../../node_modules/marked/lib/marked.umd.js","dompurify":"../../node_modules/dompurify/dist/purify.js"}],"assistant/chat.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -12805,25 +12805,31 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.renderConversationList = void 0;
+var _state = require("../state/state");
 var _chat = require("./chat");
+// const {loadConversation} = require('./chat')
+// const {state} = require('../state/state')
+
 const renderConversationList = conversations => {
   const list = document.getElementById('conversation-list');
   if (!list) return;
   list.innerHTML = '';
   conversations.forEach(conversation => {
-    const html = "\n      <li\n        class=\"conversation-item\"\n        data-id=\"".concat(conversation._id, "\"\n      >\n        ").concat(conversation.title, "\n      </li>\n    ");
+    const isActive = conversation._id === _state.state.activeConversationId;
+    const html = "\n      <li\n        class=\"conversation-item ".concat(isActive ? 'active' : '', "\"\n        data-id=\"").concat(conversation._id, "\"\n      >\n        ").concat(conversation.title, "\n      </li>\n    ");
     list.insertAdjacentHTML('beforeend', html);
   });
   const items = list.querySelectorAll('.conversation-item');
   items.forEach(item => {
-    item.addEventListener('click', () => {
+    item.addEventListener('click', async () => {
       const conversationId = item.dataset.id;
-      (0, _chat.loadConversation)(conversationId);
+      await (0, _chat.loadConversation)(conversationId);
+      renderConversationList(_state.state.conversations);
     });
   });
 };
 exports.renderConversationList = renderConversationList;
-},{"./chat":"assistant/chat.js"}],"assistant/sidebar.js":[function(require,module,exports) {
+},{"../state/state":"state/state.js","./chat":"assistant/chat.js"}],"assistant/sidebar.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -12941,10 +12947,8 @@ const initNewChat = () => {
   button.addEventListener('click', async () => {
     try {
       const conversation = await createConversation();
-      console.log('Created:', conversation);
-      await initSidebar();
-      console.log('Calling loadConversation');
       await loadConversation(conversation._id);
+      await initSidebar();
     } catch (err) {
       console.error(err);
     }

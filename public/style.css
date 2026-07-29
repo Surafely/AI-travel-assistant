@@ -1765,6 +1765,17 @@ footer {
   margin-bottom: 0.5rem;
 }
 
+.conversation-item.active {
+  background: #506082;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.conversation-item {
+  transition: background-color 0.2s ease;
+}
+
 @media (max-width: 900px) {
   .account-page .user-view,
   .settings-grid {

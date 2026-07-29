@@ -15,14 +15,8 @@ export const initNewChat = () => {
   button.addEventListener('click', async () => {
     try {
       const conversation = await createConversation();
-
-      console.log('Created:', conversation);
-
-      await initSidebar();
-
-      console.log('Calling loadConversation');
-
       await loadConversation(conversation._id);
+      await initSidebar();
     } catch (err) {
       console.error(err);
     }
