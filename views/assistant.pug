@@ -5,27 +5,35 @@ block content
 
         aside.assistant__sidebar
 
+            .assistant__logo
+                h2 🌍 AI Travel
+                p Knowledge Assistant
+
             .assistant__sidebar-header
                 button.btn.btn--green.btn--new-chat(type='button')
                     | + New Chat
 
+            h4.sidebar__title Recent Conversations
+
             ul#conversation-list.conversation-list
+
 
         section.assistant__chat
 
             header.assistant__chat-header
-                h2 AI Travel Assistant
-                p Your intelligent travel companion
+                h1 AI Travel Assistant
+                p Plan smarter. Travel better.
 
             #messages.messages
 
             form.chat-form
 
-                input.chat-input(
-                    type='text'
-                    placeholder='Ask me anything about travel...'
-                    autocomplete='off'
-                )
+                .chat-input-wrapper
 
-                button.btn.btn--green(type='submit')
-                    Send
+                    input.chat-input(
+                        type='text'
+                        placeholder='Ask me anything about your next trip...'
+                    )
+
+                    button.btn.btn--send(type='submit')
+                        | ➜

@@ -79,9 +79,3 @@ if (formPassword) {
   document.querySelector('#password').value = '';
   document.querySelector('#password-confirm').value = '';
 }
-
-// const assistantPage = document.querySelector('.assistant');
-
-// if (assistantPage) {
-//   initSidebar();
-// }

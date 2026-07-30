@@ -56,7 +56,7 @@ exports.createMessage = async (req) => {
   );
 
   // Save the title
-  await updateConversationTitle(conversation, req.body.content);
+  await updateConversationTitle(conversation, content);
 
   // Generate summary if needed
   const totalMessages = await ChatMessage.countDocuments({

@@ -8442,7 +8442,7 @@ exports.updateSettings = updateSettings;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getConversations = exports.createConversation = void 0;
+exports.updateConversation = exports.getConversations = exports.deleteConversation = exports.createConversation = void 0;
 var _axios = _interopRequireDefault(require("axios"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 const getConversations = async () => {
@@ -8465,6 +8465,27 @@ const createConversation = async () => {
   }
 };
 exports.createConversation = createConversation;
+const deleteConversation = async conversationId => {
+  try {
+    await _axios.default.delete("/api/v1/conversations/".concat(conversationId));
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+exports.deleteConversation = deleteConversation;
+const updateConversation = async (conversationId, title) => {
+  try {
+    const res = await _axios.default.patch("/api/v1/conversations/".concat(conversationId), {
+      title
+    });
+    return res.data.data.conversation;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+exports.updateConversation = updateConversation;
 },{"axios":"../../node_modules/axios/index.js"}],"state/state.js":[function(require,module,exports) {
 "use strict";
 
@@ -12767,7 +12788,7 @@ const renderMessages = messages => {
   if (!container) return;
   container.innerHTML = '';
   if (messages.length === 0) {
-    container.innerHTML = "\n      <div class=\"chat-empty\">\n        <h2>\uD83D\uDC4B Welcome!</h2>\n        <p>Start planning your next trip by asking me anything.</p>\n      </div>\n    ";
+    container.innerHTML = "\n  <div class=\"chat-empty\">\n    <h2>\uD83D\uDC4B Welcome!</h2>\n    <p>Start planning your next trip by asking me anything.</p>\n\n    <div class=\"starter-prompts\">\n      <button class=\"starter-prompt\">\n        \uD83C\uDF0D Plan a 7-day trip to Japan\n      </button>\n\n      <button class=\"starter-prompt\">\n        \uD83D\uDCB0 Find budget-friendly destinations\n      </button>\n\n      <button class=\"starter-prompt\">\n        \uD83C\uDFD6\uFE0F Create a beach vacation itinerary\n      </button>\n\n      <button class=\"starter-prompt\">\n        \u2708\uFE0F Help me plan my honeymoon\n      </button>\n    </div>\n  </div>\n";
     return;
   }
   messages.forEach(message => {
@@ -12787,7 +12808,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.loadConversation = void 0;
 var _messageAPI = require("../api/messageAPI");
 var _chatRenderer = require("./chatRenderer");
-var _state = require("../state/state.js");
+var _state = require("../state/state");
 const loadConversation = async conversationId => {
   try {
     _state.state.activeConversationId = conversationId;
@@ -12798,7 +12819,30 @@ const loadConversation = async conversationId => {
   }
 };
 exports.loadConversation = loadConversation;
-},{"../api/messageAPI":"api/messageAPI.js","./chatRenderer":"assistant/chatRenderer.js","../state/state.js":"state/state.js"}],"assistant/renderer.js":[function(require,module,exports) {
+},{"../api/messageAPI":"api/messageAPI.js","./chatRenderer":"assistant/chatRenderer.js","../state/state":"state/state.js"}],"assistant/sideBar.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.loadConversations = exports.initSidebar = void 0;
+var _conversationAPI = require("../api/conversationAPI");
+var _renderer = require("./renderer");
+var _state = require("../state/state.js");
+const loadConversations = async () => {
+  try {
+    _state.state.conversations = await (0, _conversationAPI.getConversations)();
+    (0, _renderer.renderConversationList)(_state.state.conversations);
+  } catch (err) {
+    console.error(err);
+  }
+};
+exports.loadConversations = loadConversations;
+const initSidebar = async () => {
+  await loadConversations();
+};
+exports.initSidebar = initSidebar;
+},{"../api/conversationAPI":"api/conversationAPI.js","./renderer":"assistant/renderer.js","../state/state.js":"state/state.js"}],"assistant/renderer.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -12807,6 +12851,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.renderConversationList = void 0;
 var _state = require("../state/state");
 var _chat = require("./chat");
+var _sideBar = require("./sideBar");
+var _conversationAPI = require("../api/conversationAPI");
 // const {loadConversation} = require('./chat')
 // const {state} = require('../state/state')
 
@@ -12816,7 +12862,7 @@ const renderConversationList = conversations => {
   list.innerHTML = '';
   conversations.forEach(conversation => {
     const isActive = conversation._id === _state.state.activeConversationId;
-    const html = "\n      <li\n        class=\"conversation-item ".concat(isActive ? 'active' : '', "\"\n        data-id=\"").concat(conversation._id, "\"\n      >\n        ").concat(conversation.title, "\n      </li>\n    ");
+    const html = "\n    <li\n      class=\"conversation-item ".concat(isActive ? 'active' : '', "\"\n      data-id=\"").concat(conversation._id, "\"\n    >\n      <span class=\"conversation-item__icon\">\uD83D\uDCAC</span>\n    \n      <span class=\"conversation-item__title\">\n        ").concat(conversation.title, "\n      </span>\n\n      <button \n        class=\"conversation-rename\"\n        data-id=\"").concat(conversation._id, "\"\n        type=\"button\"\n      >\n\n        \u270F\uFE0F\n      </button>\n    \n      <button \n        class=\"conversation-delete\"\n        data-id=\"").concat(conversation._id, "\"\n        type=\"button\"\n      >\n        \uD83D\uDDD1\uFE0F\n      </button>\n    </li>\n    ");
     list.insertAdjacentHTML('beforeend', html);
   });
   const items = list.querySelectorAll('.conversation-item');
@@ -12827,25 +12873,70 @@ const renderConversationList = conversations => {
       renderConversationList(_state.state.conversations);
     });
   });
+  const deleteButtons = list.querySelectorAll('.conversation-delete');
+  deleteButtons.forEach(button => {
+    button.addEventListener('click', async e => {
+      e.stopPropagation();
+      const conversationId = button.dataset.id;
+      const confirmed = confirm('Are you sure you want to delete this conversation?');
+      if (!confirmed) return;
+      try {
+        await (0, _conversationAPI.deleteConversation)(conversationId);
+
+        // If deleted conversation is currently open
+        if (_state.state.activeConversationId === conversationId) {
+          _state.state.activeConversationId = null;
+          document.getElementById('messages').innerHTML = "\n            <div class=\"chat-empty\">\n              <h2>\uD83D\uDC4B Welcome!</h2>\n              <p>Start planning your next trip by asking me anything.</p>\n            </div>\n          ";
+        }
+        await (0, _sideBar.loadConversations)();
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  });
+  const renameButtons = list.querySelectorAll('.conversation-rename');
+  renameButtons.forEach(button => {
+    button.addEventListener('click', async e => {
+      e.stopPropagation();
+      const conversationId = button.dataset.id;
+      const newTitle = prompt('Enter a new conversation title:');
+      if (!newTitle || !newTitle.trim()) return;
+      console.log('Conversation ID:', conversationId);
+      console.log('New title:', newTitle);
+      try {
+        console.log('Sending PATCH...');
+        const updated = await (0, _conversationAPI.updateConversation)(conversationId, newTitle.trim());
+        console.log('Updated conversation:', updated);
+        await (0, _sideBar.loadConversations)();
+        console.log('Sidebar refreshed.');
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  });
 };
 exports.renderConversationList = renderConversationList;
-},{"../state/state":"state/state.js","./chat":"assistant/chat.js"}],"assistant/sidebar.js":[function(require,module,exports) {
+},{"../state/state":"state/state.js","./chat":"assistant/chat.js","./sideBar":"assistant/sideBar.js","../api/conversationAPI":"api/conversationAPI.js"}],"assistant/sidebar.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.initSidebar = void 0;
+exports.loadConversations = exports.initSidebar = void 0;
 var _conversationAPI = require("../api/conversationAPI");
 var _renderer = require("./renderer");
 var _state = require("../state/state.js");
-const initSidebar = async () => {
+const loadConversations = async () => {
   try {
     _state.state.conversations = await (0, _conversationAPI.getConversations)();
     (0, _renderer.renderConversationList)(_state.state.conversations);
   } catch (err) {
     console.error(err);
   }
+};
+exports.loadConversations = loadConversations;
+const initSidebar = async () => {
+  await loadConversations();
 };
 exports.initSidebar = initSidebar;
 },{"../api/conversationAPI":"api/conversationAPI.js","./renderer":"assistant/renderer.js","../state/state.js":"state/state.js"}],"api/chatAPI.js":[function(require,module,exports) {
@@ -12877,7 +12968,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.initChatForm = void 0;
 var _chatAPI = require("../api/chatAPI");
-var _chat = require("./chat");
+var _state = require("../state/state");
+var _sidebar = require("./sidebar");
 var _chatRenderer = require("./chatRenderer");
 const initChatForm = () => {
   const form = document.querySelector('.chat-form');
@@ -12887,7 +12979,7 @@ const initChatForm = () => {
     e.preventDefault();
     const content = input.value.trim();
     if (!content) return;
-    if (!_chat.activeConversationId) {
+    if (!_state.state.activeConversationId) {
       alert('Please select a conversation first.');
       return;
     }
@@ -12903,7 +12995,10 @@ const initChatForm = () => {
       (0, _chatRenderer.showThinking)();
 
       // Send the request
-      const result = await (0, _chatAPI.sendMessage)(_chat.activeConversationId, content);
+      const result = await (0, _chatAPI.sendMessage)(_state.state.activeConversationId, content);
+
+      // Load conversations
+      await (0, _sidebar.loadConversations)();
 
       // Remove the thinking indicator
       (0, _chatRenderer.removeThinking)();
@@ -12921,41 +13016,37 @@ const initChatForm = () => {
   });
 };
 exports.initChatForm = initChatForm;
-},{"../api/chatAPI":"api/chatAPI.js","./chat":"assistant/chat.js","./chatRenderer":"assistant/chatRenderer.js"}],"assistant/newChat.js":[function(require,module,exports) {
+},{"../api/chatAPI":"api/chatAPI.js","../state/state":"state/state.js","./sidebar":"assistant/sidebar.js","./chatRenderer":"assistant/chatRenderer.js"}],"assistant/newChat.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.initNewChat = void 0;
-const _require = require('../api/conversationAPI'),
-  createConversation = _require.createConversation;
-const _require2 = require('./sidebar'),
-  initSidebar = _require2.initSidebar;
-const _require3 = require('./chat'),
-  activeConversationId = _require3.activeConversationId,
-  loadConversation = _require3.loadConversation;
-// import { createConversation } from '../api/conversationAPI';
-
-// import { initSidebar } from './sidebar';
-
-// import { activeConversationId } from './chat';
+var _conversationAPI = require("../api/conversationAPI");
+var _sidebar = require("./sidebar");
+var _state = require("../state/state");
+var _chat = require("./chat");
+// const { createConversation } = require('../api/conversationAPI');
+// const { initSidebar } = require('./sidebar');
+// const { activeConversationId, loadConversation } = require('./chat');
 
 const initNewChat = () => {
   const button = document.querySelector('.btn--new-chat');
   if (!button) return;
   button.addEventListener('click', async () => {
     try {
-      const conversation = await createConversation();
-      await loadConversation(conversation._id);
-      await initSidebar();
+      const conversation = await (0, _conversationAPI.createConversation)();
+      _state.state.activeConversationId = conversation._id;
+      await (0, _chat.loadConversation)(conversation._id);
+      await (0, _sidebar.initSidebar)();
     } catch (err) {
       console.error(err);
     }
   });
 };
 exports.initNewChat = initNewChat;
-},{"../api/conversationAPI":"api/conversationAPI.js","./sidebar":"assistant/sidebar.js","./chat":"assistant/chat.js"}],"index.js":[function(require,module,exports) {
+},{"../api/conversationAPI":"api/conversationAPI.js","./sidebar":"assistant/sidebar.js","../state/state":"state/state.js","./chat":"assistant/chat.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 require("core-js/modules/es7.array.flat-map.js");
@@ -13037,12 +13128,6 @@ if (formPassword) {
   document.querySelector('#password').value = '';
   document.querySelector('#password-confirm').value = '';
 }
-
-// const assistantPage = document.querySelector('.assistant');
-
-// if (assistantPage) {
-//   initSidebar();
-// }
 },{"core-js/modules/es7.array.flat-map.js":"../../node_modules/core-js/modules/es7.array.flat-map.js","core-js/modules/es6.array.sort.js":"../../node_modules/core-js/modules/es6.array.sort.js","core-js/modules/es7.promise.finally.js":"../../node_modules/core-js/modules/es7.promise.finally.js","core-js/modules/es7.symbol.async-iterator.js":"../../node_modules/core-js/modules/es7.symbol.async-iterator.js","core-js/modules/es7.string.trim-left.js":"../../node_modules/core-js/modules/es7.string.trim-left.js","core-js/modules/es7.string.trim-right.js":"../../node_modules/core-js/modules/es7.string.trim-right.js","core-js/modules/web.timers.js":"../../node_modules/core-js/modules/web.timers.js","core-js/modules/web.immediate.js":"../../node_modules/core-js/modules/web.immediate.js","core-js/modules/web.dom.iterable.js":"../../node_modules/core-js/modules/web.dom.iterable.js","./leaflet":"leaflet.js","./login":"login.js","./updateSattings":"updateSattings.js","./assistant/sidebar":"assistant/sidebar.js","./assistant/chatForm":"assistant/chatForm.js","./assistant/newChat":"assistant/newChat.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';

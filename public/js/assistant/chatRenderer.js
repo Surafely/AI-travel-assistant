@@ -60,11 +60,29 @@ export const renderMessages = (messages) => {
 
   if (messages.length === 0) {
     container.innerHTML = `
-      <div class="chat-empty">
-        <h2>👋 Welcome!</h2>
-        <p>Start planning your next trip by asking me anything.</p>
-      </div>
-    `;
+  <div class="chat-empty">
+    <h2>👋 Welcome!</h2>
+    <p>Start planning your next trip by asking me anything.</p>
+
+    <div class="starter-prompts">
+      <button class="starter-prompt">
+        🌍 Plan a 7-day trip to Japan
+      </button>
+
+      <button class="starter-prompt">
+        💰 Find budget-friendly destinations
+      </button>
+
+      <button class="starter-prompt">
+        🏖️ Create a beach vacation itinerary
+      </button>
+
+      <button class="starter-prompt">
+        ✈️ Help me plan my honeymoon
+      </button>
+    </div>
+  </div>
+`;
 
     return;
   }

@@ -1,5 +1,6 @@
 import { sendMessage } from '../api/chatAPI';
-import { activeConversationId } from './chat';
+import { state } from '../state/state';
+import { loadConversations } from './sidebar';
 
 import { appendMessage, showThinking, removeThinking } from './chatRenderer';
 
@@ -16,7 +17,7 @@ export const initChatForm = () => {
 
     if (!content) return;
 
-    if (!activeConversationId) {
+    if (!state.activeConversationId) {
       alert('Please select a conversation first.');
       return;
     }
@@ -34,7 +35,10 @@ export const initChatForm = () => {
       showThinking();
 
       // Send the request
-      const result = await sendMessage(activeConversationId, content);
+      const result = await sendMessage(state.activeConversationId, content);
+
+      // Load conversations
+      await loadConversations();
 
       // Remove the thinking indicator
       removeThinking();

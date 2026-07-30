@@ -18,6 +18,7 @@ router
 
   .route('/:id')
   .get(conversationController.getConversation)
+  .patch(conversationController.updateConversation)
   .delete(conversationController.deleteConversation);
 
 module.exports = router;
