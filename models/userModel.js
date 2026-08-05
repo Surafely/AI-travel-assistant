@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'Please tell us your name'],
+    trim: true,
   },
 
   email: {
@@ -16,6 +17,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
     validate: [validator.isEmail, 'Please provide your valid email.'],
+    trim: true,
   },
 
   photo: {

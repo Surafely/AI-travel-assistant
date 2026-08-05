@@ -1,13 +1,12 @@
 const path = require('path');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const express = require('express');
-const morgan = require('morgan');
+// const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 
-const AppError = require('./utils/appError');
-const globalErrorHsndler = require('./controllers/errorController');
 const cookiesParser = require('cookie-parser');
+const globalErrorHsndler = require('./controllers/errorController');
 
 const tripsRouter = require('./routes/tripRoutes');
 const usersRouter = require('./routes/userRoutes');
@@ -17,7 +16,7 @@ const authController = require('./controllers/authController');
 
 const app = express();
 const chromeDevToolsUrl = '/.well-known/appspecific/com.chrome.devtools.json';
-const skipChromeDevToolsRequest = (req) => req.url === chromeDevToolsUrl;
+// const skipChromeDevToolsRequest = (req) => req.url === chromeDevToolsUrl;
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
@@ -25,12 +24,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('query parser', 'extended');
 
 //                          GLOBAL MIDDLEWARES
-
-// app.use(
-//   morgan('dev', {
-//     skip: skipChromeDevToolsRequest,
-//   }),
-// );
 
 // SET SECURITY HTTP HEADERS
 app.use(
@@ -57,9 +50,6 @@ app.use(
 );
 
 //DEVELOPMENT LOGGING
-// if (process.env.NODE_ENV === 'development') {
-//   app.use(morgan('dev', { skip: skipChromeDevToolsRequest }));
-// }
 
 console.log(
   process.env.NODE_ENV === 'development'
@@ -96,11 +86,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/v1/trips', tripsRouter);
 app.use('/api/v1/users', usersRouter);
+app.use('/api/v1/signup', usersRouter);
 app.use('/api/v1/conversations', conversationRouter);
-
-// app.all('/{*splat}', (req, res, next) => {
-//   next(new AppError(`Can't find ${req.originalUrl} on this server.`, 404));
-// });
 
 app.use(globalErrorHsndler);
 
