@@ -4,19 +4,17 @@ import '@babel/polyfill';
 import { displayMap } from './leaflet';
 import { login, logout } from './login';
 import { updateSettings } from './updateSattings';
-import { initSidebar } from './assistant/sidebar';
+import { initSidebar, initMobileSidebar } from './assistant/sidebar';
 import { initChatForm } from './assistant/chatForm';
 import { initNewChat } from './assistant/newChat';
-
-console.log('Index.js loaded');
 
 const assistantPage = document.querySelector('.assistant');
 
 if (assistantPage) {
-  console.log('Assistant page detected');
   initSidebar();
   initChatForm();
   initNewChat();
+  initMobileSidebar();
 }
 
 // DOM ELEMENTS

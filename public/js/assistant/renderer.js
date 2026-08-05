@@ -3,9 +3,7 @@ import { loadConversation } from './chat';
 import { loadConversations } from './sideBar';
 import { deleteConversation } from '../api/conversationAPI';
 import { updateConversation } from '../api/conversationAPI';
-
-// const {loadConversation} = require('./chat')
-// const {state} = require('../state/state')
+import { showToast } from '../toast';
 
 export const renderConversationList = (conversations) => {
   const list = document.getElementById('conversation-list');
@@ -29,22 +27,29 @@ export const renderConversationList = (conversations) => {
       </span>
 
       <button 
-        class="conversation-rename"
-        data-id="${conversation._id}"
+        class="conversation-menu"
         type="button"
       >
+        ⋮
+      </button>
 
-        ✏️
-      </button>
-    
-      <button 
-        class="conversation-delete"
-        data-id="${conversation._id}"
-        type="button"
-      >
-        🗑️
-      </button>
-    </li>
+      <div class="conversation-actions">
+        <button 
+          class="conversation-rename"
+          data-id="${conversation._id}"
+          type="button"
+        >
+          Rename
+        </button>
+
+        <button 
+          class="conversation-delete"
+          data-id="${conversation._id}"
+          type="button"
+        >
+          Delete
+        </button>
+      </div>
     `;
 
     list.insertAdjacentHTML('beforeend', html);
@@ -89,8 +94,14 @@ export const renderConversationList = (conversations) => {
         }
 
         await loadConversations();
+        showToast('Conversation deleted successfully.');
       } catch (err) {
         console.error(err);
+
+        showToast(
+          err.response?.data?.message || 'Failed to delete conversation.',
+          'error',
+        );
       }
     });
   });
@@ -106,25 +117,49 @@ export const renderConversationList = (conversations) => {
 
       if (!newTitle || !newTitle.trim()) return;
 
-      console.log('Conversation ID:', conversationId);
-      console.log('New title:', newTitle);
-
       try {
-        console.log('Sending PATCH...');
-
         const updated = await updateConversation(
           conversationId,
           newTitle.trim(),
         );
 
-        console.log('Updated conversation:', updated);
-
         await loadConversations();
 
-        console.log('Sidebar refreshed.');
+        showToast('Conversation renamed successfully.');
       } catch (err) {
         console.error(err);
+
+        showToast(
+          err.response?.data?.message || 'Failed to rename conversation.',
+          'error',
+        );
       }
+    });
+  });
+
+  const menuButtons = list.querySelectorAll('.conversation-menu');
+
+  menuButtons.forEach((button) => {
+    button.addEventListener('click', (e) => {
+      e.stopPropagation();
+
+      const item = button.closest('.conversation-item');
+
+      item.querySelector('.conversation-actions').classList.toggle('show');
+    });
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.conversation-actions').forEach((menu) => {
+      menu.classList.remove('show');
+    });
+  });
+
+  const actionMenus = list.querySelectorAll('.conversation-actions');
+
+  actionMenus.forEach((menu) => {
+    menu.addEventListener('click', (e) => {
+      e.stopPropagation();
     });
   });
 };

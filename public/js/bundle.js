@@ -12825,7 +12825,7 @@ exports.loadConversation = loadConversation;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.loadConversations = exports.initSidebar = void 0;
+exports.loadConversations = exports.initSidebar = exports.initMobileSidebar = void 0;
 var _conversationAPI = require("../api/conversationAPI");
 var _renderer = require("./renderer");
 var _state = require("../state/state.js");
@@ -12842,7 +12842,58 @@ const initSidebar = async () => {
   await loadConversations();
 };
 exports.initSidebar = initSidebar;
-},{"../api/conversationAPI":"api/conversationAPI.js","./renderer":"assistant/renderer.js","../state/state.js":"state/state.js"}],"assistant/renderer.js":[function(require,module,exports) {
+const initMobileSidebar = async () => {
+  const sidebar = document.querySelector('.assistant__sidebar');
+  const overlay = document.querySelector('.sidebar-overlay');
+  const toggle = document.querySelector('.sidebar-toggle');
+  const close = document.querySelector('.sidebar-close');
+  if (!sidebar) return;
+  const closeSidebar = () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+  };
+  toggle === null || toggle === void 0 || toggle.addEventListener('click', () => {
+    sidebar.classList.add('open');
+    overlay.classList.add('show');
+  });
+  close === null || close === void 0 || close.addEventListener('click', closeSidebar);
+  overlay === null || overlay === void 0 || overlay.addEventListener('click', closeSidebar);
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+      closeSidebar();
+    }
+  });
+};
+exports.initMobileSidebar = initMobileSidebar;
+},{"../api/conversationAPI":"api/conversationAPI.js","./renderer":"assistant/renderer.js","../state/state.js":"state/state.js"}],"toast.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.showToast = void 0;
+const showToast = async function (message) {
+  let type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'success';
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+  const toast = document.createElement('div');
+  toast.className = "toast ".concat(type);
+  const icons = {
+    success: '✓',
+    error: '✕',
+    info: 'ℹ'
+  };
+  toast.innerHTML = "\n      <span>".concat(icons[type] || 'ℹ', "</span>\n      <span>").concat(message, "</span>\n    ");
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add('hide');
+    setTimeout(() => {
+      toast.remove();
+    }, 250);
+  }, 3000);
+};
+exports.showToast = showToast;
+},{}],"assistant/renderer.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -12853,16 +12904,14 @@ var _state = require("../state/state");
 var _chat = require("./chat");
 var _sideBar = require("./sideBar");
 var _conversationAPI = require("../api/conversationAPI");
-// const {loadConversation} = require('./chat')
-// const {state} = require('../state/state')
-
+var _toast = require("../toast");
 const renderConversationList = conversations => {
   const list = document.getElementById('conversation-list');
   if (!list) return;
   list.innerHTML = '';
   conversations.forEach(conversation => {
     const isActive = conversation._id === _state.state.activeConversationId;
-    const html = "\n    <li\n      class=\"conversation-item ".concat(isActive ? 'active' : '', "\"\n      data-id=\"").concat(conversation._id, "\"\n    >\n      <span class=\"conversation-item__icon\">\uD83D\uDCAC</span>\n    \n      <span class=\"conversation-item__title\">\n        ").concat(conversation.title, "\n      </span>\n\n      <button \n        class=\"conversation-rename\"\n        data-id=\"").concat(conversation._id, "\"\n        type=\"button\"\n      >\n\n        \u270F\uFE0F\n      </button>\n    \n      <button \n        class=\"conversation-delete\"\n        data-id=\"").concat(conversation._id, "\"\n        type=\"button\"\n      >\n        \uD83D\uDDD1\uFE0F\n      </button>\n    </li>\n    ");
+    const html = "\n    <li\n      class=\"conversation-item ".concat(isActive ? 'active' : '', "\"\n      data-id=\"").concat(conversation._id, "\"\n    >\n      <span class=\"conversation-item__icon\">\uD83D\uDCAC</span>\n    \n      <span class=\"conversation-item__title\">\n        ").concat(conversation.title, "\n      </span>\n\n      <button \n        class=\"conversation-menu\"\n        type=\"button\"\n      >\n        \u22EE\n      </button>\n\n      <div class=\"conversation-actions\">\n        <button \n          class=\"conversation-rename\"\n          data-id=\"").concat(conversation._id, "\"\n          type=\"button\"\n        >\n          Rename\n        </button>\n\n        <button \n          class=\"conversation-delete\"\n          data-id=\"").concat(conversation._id, "\"\n          type=\"button\"\n        >\n          Delete\n        </button>\n      </div>\n    ");
     list.insertAdjacentHTML('beforeend', html);
   });
   const items = list.querySelectorAll('.conversation-item');
@@ -12889,8 +12938,11 @@ const renderConversationList = conversations => {
           document.getElementById('messages').innerHTML = "\n            <div class=\"chat-empty\">\n              <h2>\uD83D\uDC4B Welcome!</h2>\n              <p>Start planning your next trip by asking me anything.</p>\n            </div>\n          ";
         }
         await (0, _sideBar.loadConversations)();
+        (0, _toast.showToast)('Conversation deleted successfully.');
       } catch (err) {
+        var _err$response;
         console.error(err);
+        (0, _toast.showToast)(((_err$response = err.response) === null || _err$response === void 0 || (_err$response = _err$response.data) === null || _err$response === void 0 ? void 0 : _err$response.message) || 'Failed to delete conversation.', 'error');
       }
     });
   });
@@ -12901,28 +12953,45 @@ const renderConversationList = conversations => {
       const conversationId = button.dataset.id;
       const newTitle = prompt('Enter a new conversation title:');
       if (!newTitle || !newTitle.trim()) return;
-      console.log('Conversation ID:', conversationId);
-      console.log('New title:', newTitle);
       try {
-        console.log('Sending PATCH...');
         const updated = await (0, _conversationAPI.updateConversation)(conversationId, newTitle.trim());
-        console.log('Updated conversation:', updated);
         await (0, _sideBar.loadConversations)();
-        console.log('Sidebar refreshed.');
+        (0, _toast.showToast)('Conversation renamed successfully.');
       } catch (err) {
+        var _err$response2;
         console.error(err);
+        (0, _toast.showToast)(((_err$response2 = err.response) === null || _err$response2 === void 0 || (_err$response2 = _err$response2.data) === null || _err$response2 === void 0 ? void 0 : _err$response2.message) || 'Failed to rename conversation.', 'error');
       }
+    });
+  });
+  const menuButtons = list.querySelectorAll('.conversation-menu');
+  menuButtons.forEach(button => {
+    button.addEventListener('click', e => {
+      e.stopPropagation();
+      const item = button.closest('.conversation-item');
+      item.querySelector('.conversation-actions').classList.toggle('show');
+    });
+  });
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.conversation-actions').forEach(menu => {
+      menu.classList.remove('show');
+    });
+  });
+  const actionMenus = list.querySelectorAll('.conversation-actions');
+  actionMenus.forEach(menu => {
+    menu.addEventListener('click', e => {
+      e.stopPropagation();
     });
   });
 };
 exports.renderConversationList = renderConversationList;
-},{"../state/state":"state/state.js","./chat":"assistant/chat.js","./sideBar":"assistant/sideBar.js","../api/conversationAPI":"api/conversationAPI.js"}],"assistant/sidebar.js":[function(require,module,exports) {
+},{"../state/state":"state/state.js","./chat":"assistant/chat.js","./sideBar":"assistant/sideBar.js","../api/conversationAPI":"api/conversationAPI.js","../toast":"toast.js"}],"assistant/sidebar.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.loadConversations = exports.initSidebar = void 0;
+exports.loadConversations = exports.initSidebar = exports.initMobileSidebar = void 0;
 var _conversationAPI = require("../api/conversationAPI");
 var _renderer = require("./renderer");
 var _state = require("../state/state.js");
@@ -12939,6 +13008,29 @@ const initSidebar = async () => {
   await loadConversations();
 };
 exports.initSidebar = initSidebar;
+const initMobileSidebar = async () => {
+  const sidebar = document.querySelector('.assistant__sidebar');
+  const overlay = document.querySelector('.sidebar-overlay');
+  const toggle = document.querySelector('.sidebar-toggle');
+  const close = document.querySelector('.sidebar-close');
+  if (!sidebar) return;
+  const closeSidebar = () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+  };
+  toggle === null || toggle === void 0 || toggle.addEventListener('click', () => {
+    sidebar.classList.add('open');
+    overlay.classList.add('show');
+  });
+  close === null || close === void 0 || close.addEventListener('click', closeSidebar);
+  overlay === null || overlay === void 0 || overlay.addEventListener('click', closeSidebar);
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+      closeSidebar();
+    }
+  });
+};
+exports.initMobileSidebar = initMobileSidebar;
 },{"../api/conversationAPI":"api/conversationAPI.js","./renderer":"assistant/renderer.js","../state/state.js":"state/state.js"}],"api/chatAPI.js":[function(require,module,exports) {
 "use strict";
 
@@ -12967,6 +13059,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.initChatForm = void 0;
+var _conversationAPI = require("../api/conversationAPI");
 var _chatAPI = require("../api/chatAPI");
 var _state = require("../state/state");
 var _sidebar = require("./sidebar");
@@ -12975,6 +13068,12 @@ const initChatForm = () => {
   const form = document.querySelector('.chat-form');
   const input = document.querySelector('.chat-input');
   if (!form || !input) return;
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      form.requestSubmit();
+    }
+  });
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const content = input.value.trim();
@@ -12985,25 +13084,14 @@ const initChatForm = () => {
     }
     input.value = '';
     try {
-      // Show the user's message immediately
       (0, _chatRenderer.appendMessage)({
         role: 'user',
         content
       });
-
-      // Show the thinking indicator
       (0, _chatRenderer.showThinking)();
-
-      // Send the request
       const result = await (0, _chatAPI.sendMessage)(_state.state.activeConversationId, content);
-
-      // Load conversations
       await (0, _sidebar.loadConversations)();
-
-      // Remove the thinking indicator
       (0, _chatRenderer.removeThinking)();
-
-      // Show Gemini's reply
       (0, _chatRenderer.appendMessage)(result.assistantMessage);
     } catch (err) {
       (0, _chatRenderer.removeThinking)();
@@ -13014,9 +13102,27 @@ const initChatForm = () => {
       console.error(err);
     }
   });
+
+  // Starter prompts
+  document.addEventListener('click', async e => {
+    const button = e.target.closest('.starter-prompt');
+    if (!button) return;
+    const message = button.textContent.trim();
+    try {
+      if (!_state.state.activeConversationId) {
+        const conversation = await (0, _conversationAPI.createConversation)();
+        _state.state.activeConversationId = conversation._id;
+        await (0, _sidebar.loadConversations)();
+      }
+      input.value = message;
+      form.requestSubmit();
+    } catch (err) {
+      console.error(err);
+    }
+  });
 };
 exports.initChatForm = initChatForm;
-},{"../api/chatAPI":"api/chatAPI.js","../state/state":"state/state.js","./sidebar":"assistant/sidebar.js","./chatRenderer":"assistant/chatRenderer.js"}],"assistant/newChat.js":[function(require,module,exports) {
+},{"../api/conversationAPI":"api/conversationAPI.js","../api/chatAPI":"api/chatAPI.js","../state/state":"state/state.js","./sidebar":"assistant/sidebar.js","./chatRenderer":"assistant/chatRenderer.js"}],"assistant/newChat.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13067,13 +13173,12 @@ var _newChat = require("./assistant/newChat");
 /* eslint-disable */
 // const displayMap = require('./leaflet')
 
-console.log('Index.js loaded');
 const assistantPage = document.querySelector('.assistant');
 if (assistantPage) {
-  console.log('Assistant page detected');
   (0, _sidebar.initSidebar)();
   (0, _chatForm.initChatForm)();
   (0, _newChat.initNewChat)();
+  (0, _sidebar.initMobileSidebar)();
 }
 
 // DOM ELEMENTS
@@ -13153,7 +13258,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50471" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51168" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

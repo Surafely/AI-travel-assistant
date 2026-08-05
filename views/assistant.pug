@@ -2,27 +2,36 @@ extends base
 
 block content
     main.assistant
+        #toast-container.toast-container
+
+        // Mobile overlay
+        .sidebar-overlay
 
         aside.assistant__sidebar
+
+            button.sidebar-close(type="button") ✕
 
             .assistant__logo
                 h2 🌍 AI Travel
                 p Knowledge Assistant
 
             .assistant__sidebar-header
-                button.btn.btn--green.btn--new-chat(type='button')
+                button.btn.btn--green.btn--new-chat(type="button")
                     | + New Chat
 
             h4.sidebar__title Recent Conversations
 
             ul#conversation-list.conversation-list
 
-
         section.assistant__chat
 
             header.assistant__chat-header
-                h1 AI Travel Assistant
-                p Plan smarter. Travel better.
+
+                button.sidebar-toggle(type="button") ☰
+
+                .chat-header-content
+                    h1 AI Travel Assistant
+                    p Plan smarter. Travel better.
 
             #messages.messages
 
@@ -30,10 +39,10 @@ block content
 
                 .chat-input-wrapper
 
-                    input.chat-input(
-                        type='text'
-                        placeholder='Ask me anything about your next trip...'
+                    textarea.chat-input(
+                        rows="1"
+                        placeholder="Ask me anything about your next trip..."
                     )
 
-                    button.btn.btn--send(type='submit')
+                    button.btn.btn--send(type="submit")
                         | ➜

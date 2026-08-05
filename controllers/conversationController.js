@@ -54,7 +54,7 @@ exports.getConversation = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteConversation = catchAsync(async (req, res, next) => {
-  const conversation = await Conversation.findOne({
+  const conversation = await Conversation.findOneAndDelete({
     _id: req.params.id,
     user: req.user.id,
   });
@@ -70,13 +70,13 @@ exports.deleteConversation = catchAsync(async (req, res, next) => {
 });
 
 exports.updateConversation = catchAsync(async (req, res, next) => {
-  const conversation = await Conversation.findByIdAndUpdate({
+  const conversation = await Conversation.findOne({
     _id: req.params.id,
     user: req.user.id,
   });
 
   if (!conversation) {
-    return next(new AppError('Conversation not find', 404));
+    return next(new AppError('Conversation not found', 404));
   }
 
   if (!req.body.title) {
@@ -84,9 +84,10 @@ exports.updateConversation = catchAsync(async (req, res, next) => {
   }
 
   conversation.title = req.body.title;
+
   await conversation.save();
 
-  res.status(204).json({
+  res.status(200).json({
     status: 'success',
     data: {
       conversation,

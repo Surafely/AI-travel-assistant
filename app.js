@@ -26,11 +26,11 @@ app.set('query parser', 'extended');
 
 //                          GLOBAL MIDDLEWARES
 
-app.use(
-  morgan('dev', {
-    skip: skipChromeDevToolsRequest,
-  }),
-);
+// app.use(
+//   morgan('dev', {
+//     skip: skipChromeDevToolsRequest,
+//   }),
+// );
 
 // SET SECURITY HTTP HEADERS
 app.use(
@@ -57,9 +57,9 @@ app.use(
 );
 
 //DEVELOPMENT LOGGING
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev', { skip: skipChromeDevToolsRequest }));
-}
+// if (process.env.NODE_ENV === 'development') {
+//   app.use(morgan('dev', { skip: skipChromeDevToolsRequest }));
+// }
 
 console.log(
   process.env.NODE_ENV === 'development'
@@ -98,9 +98,9 @@ app.use('/api/v1/trips', tripsRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/conversations', conversationRouter);
 
-app.all('/{*splat}', (req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server.`, 404));
-});
+// app.all('/{*splat}', (req, res, next) => {
+//   next(new AppError(`Can't find ${req.originalUrl} on this server.`, 404));
+// });
 
 app.use(globalErrorHsndler);
 
