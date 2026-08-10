@@ -19,6 +19,7 @@ const createSendToken = (user, statusCode, res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
     ),
     httpOnly: true,
+    sameSite: 'lax',
   };
 
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
@@ -44,8 +45,8 @@ exports.signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
-    passwordChangedAt: req.body.passwordChangedAt,
-    role: req.body.role,
+    // passwordChangedAt: req.body.passwordChangedAt,
+    // role: req.body.role,
   });
 
   const url = `${req.protocol}://${req.get('host')}/me`;
@@ -134,9 +135,9 @@ exports.protect = catchAsync(async (req, res, next) => {
     token = req.cookies.jwt;
   }
 
-  if (!token)
+  if (!token || token === 'loggedout')
     return next(
-      new AppError('You are not logged in. please log in to get access.', 401),
+      new AppError('You are not logged in. Please log in to get access.', 401),
     );
 
   // VERIFICATION TOKEN
@@ -204,7 +205,7 @@ exports.restrictTo =
     next();
   };
 
-exports.forgetPassword = catchAsync(async (req, res, next) => {
+exports.forgotPassword = catchAsync(async (req, res, next) => {
   // GET USER WITH POSTED EMAIL
   const user = await User.findOne({ email: req.body.email });
   if (!user)
@@ -217,7 +218,7 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
   // SEND IT TO THE USER'S EMAIL
 
   try {
-    const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
+    const resetURL = `${req.protocol}://${req.get('host')}/resetPassword/${resetToken}`;
     const email = new Email(user, resetURL);
     await email.sendPasswordReset();
 

@@ -2,7 +2,7 @@
 // const displayMap = require('./leaflet')
 import '@babel/polyfill';
 import { displayMap } from './leaflet';
-import { login, logout } from './login';
+import { login, logout, signup } from './login';
 import { updateSettings } from './updateSattings';
 import { initSidebar, initMobileSidebar } from './assistant/sidebar';
 import { initChatForm } from './assistant/chatForm';
@@ -23,6 +23,7 @@ const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const formUser = document.querySelector('.form-user-data');
 const formPassword = document.querySelector('.form-user-password');
+const signupForm = document.querySelector('#signup-form');
 
 if (leaflet) {
   const mapElement = leaflet;
@@ -42,6 +43,21 @@ if (logOutBtn) {
   logOutBtn.addEventListener('click', (e) => {
     e.preventDefault();
     logout();
+  });
+}
+
+if (signupForm) {
+  signupForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const data = {
+      name: document.querySelector('#name').value,
+      email: document.querySelector('#email').value,
+      password: document.querySelector('#password').value,
+      passwordConfirm: document.querySelector('#passwordConfirm').value,
+    };
+
+    signup(data);
   });
 }
 

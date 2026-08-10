@@ -46,3 +46,22 @@ exports.getAssistant = (req, res) => {
     title: 'AI Assistant',
   });
 };
+
+exports.signup = (req, res) => {
+  res.status(200).render('signup', {
+    title: 'Sign Up',
+  });
+};
+
+exports.getForgotPasswordForm = (req, res) => {
+  res.status(200).render('forgotPassword', {
+    title: 'Forgot Password',
+  });
+};
+
+exports.getResetPasswordForm = (req, res) => {
+  res.status(200).render('resetPassword', {
+    title: 'Reset Password',
+    token: req.params.token,
+  });
+};

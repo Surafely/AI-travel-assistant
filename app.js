@@ -86,7 +86,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/v1/trips', tripsRouter);
 app.use('/api/v1/users', usersRouter);
-app.use('/api/v1/signup', usersRouter);
 app.use('/api/v1/conversations', conversationRouter);
 
 app.use(globalErrorHsndler);

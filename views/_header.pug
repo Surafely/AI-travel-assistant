@@ -17,7 +17,7 @@ nav.overview-nav(aria-label='Main')
                     alt=`Photo of ${user.name}`
                 )
                 span.nav-user__name= user.name.split(' ')[0]
-            a.btn-auth.btn-auth--ghost.nav__el--logout Log out
+            a.btn-auth.btn-auth--ghost.nav__el--logout(href='#') Log out
         else
             a.btn-auth.btn-auth--ghost(href='/login') Log in
-            a.btn-auth.btn-auth--solid(href='/') Sign in
+            a.btn-auth.btn-auth--solid(href='/signup') Sign up

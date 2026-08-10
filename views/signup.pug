@@ -2,43 +2,84 @@ extends base
 
 block content
     main.auth
-        .auth__form
-            h2 Create your account
+        .auth__card
 
-            form#signup-form
+            //- LEFT SIDE
+            section.auth__intro
+                .auth__intro-content
+                    .auth__eyebrow
+                        span 🌍
+                        | AI Travel
 
-                .form-group
-                    label(for="name") Name
-                    input#name(
-                        type="text"
-                        placeholder="Your name"
-                        required
-                    )
+                    h1
+                        | Your next
+                        br
+                        | adventure starts here.
 
-                .form-group
-                    label(for="email") Email
-                    input#email(
-                        type="email"
-                        placeholder="your@email.com"
-                        required
-                    )
+                    p
+                        | Create your account, save your travel plans,
+                        | and let your AI travel assistant help you
+                        | plan smarter.
 
-                .form-group
-                    label(for="password") Password
-                    input#password(
-                        type="password"
-                        placeholder="********"
-                        required
-                    )
+                    .auth__features
+                        .auth__feature
+                            span.auth__feature-icon ✓
+                            span Save your travel conversations
 
-                .form-group
-                    label(for="passwordConfirm") Confirm Password
-                    input#passwordConfirm(
-                        type="password"
-                        placeholder="********"
-                        required
-                    )
+                        .auth__feature
+                            span.auth__feature-icon ✓
+                            span Plan and organize your trips
+
+                        .auth__feature
+                            span.auth__feature-icon ✓
+                            span Get personalized travel assistance
 
 
-                button.btn.btn--green(type="submit")
-                    | Create Account
+            //- RIGHT SIDE
+            section.auth__form-section
+
+                .auth__header
+                    p.auth__welcome Create your account
+                    h2 Start your journey
+                    p Join your AI-powered travel assistant today.
+
+                form#signup-form.auth__form
+
+                    .form__group
+                        label.form__label(for="name") Full Name
+                        input#name.form__input(
+                            type="text"
+                            placeholder="Enter your full name"
+                            required
+                        )
+
+                    .form__group
+                        label.form__label(for="email") Email Address
+                        input#email.form__input(
+                            type="email"
+                            placeholder="Enter your email"
+                            required
+                        )
+
+                    .form__group
+                        label.form__label(for="password") Password
+                        input#password.form__input(
+                            type="password"
+                            placeholder="Create a password"
+                            required
+                        )
+
+                    .form__group
+                        label.form__label(for="passwordConfirm") Confirm Password
+                        input#passwordConfirm.form__input(
+                            type="password"
+                            placeholder="Confirm your password"
+                            required
+                        )
+
+                    button.btn.btn--green.btn--signup(type="submit")
+                        | Create Account
+
+                p.auth__footer
+                    | Already have an account?
+                    a(href="/login") Log in

@@ -8360,7 +8360,7 @@ exports.Axios = Axios;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.logout = exports.login = void 0;
+exports.signup = exports.logout = exports.login = void 0;
 var _alert = require("./alert");
 var _axios = _interopRequireDefault(require("axios"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -8370,7 +8370,7 @@ const login = async (email, password) => {
   try {
     const res = await (0, _axios.default)({
       method: 'POST',
-      url: 'http://127.0.0.1:3000/api/v1/users/login',
+      url: '/api/v1/users/login',
       data: {
         email,
         password
@@ -8393,16 +8393,36 @@ const logout = async () => {
   try {
     const res = await (0, _axios.default)({
       method: 'GET',
-      url: 'http://127.0.0.1:3000/api/v1/users/logout'
+      url: '/api/v1/users/logout'
     });
     if (res.data.status === 'success') {
-      location.reload();
+      window.location.assign('/');
     }
   } catch (err) {
     (0, _alert.showAlert)('error', 'Error logging out. Try again.');
   }
 };
 exports.logout = logout;
+const signup = async data => {
+  try {
+    const res = await (0, _axios.default)({
+      method: 'POST',
+      url: '/api/v1/users/signup',
+      data,
+      withCredentials: true
+    });
+    if (res.data.status === 'success') {
+      (0, _alert.showAlert)('success', 'Account created successfully!');
+      setTimeout(() => {
+        window.location.href = '/assistant';
+      }, 1500);
+    }
+  } catch (err) {
+    var _err$response2;
+    (0, _alert.showAlert)('error', ((_err$response2 = err.response) === null || _err$response2 === void 0 || (_err$response2 = _err$response2.data) === null || _err$response2 === void 0 ? void 0 : _err$response2.message) || 'Something went wrong');
+  }
+};
+exports.signup = signup;
 },{"./alert":"alert.js","axios":"../../node_modules/axios/index.js"}],"updateSattings.js":[function(require,module,exports) {
 "use strict";
 
@@ -13187,6 +13207,7 @@ const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const formUser = document.querySelector('.form-user-data');
 const formPassword = document.querySelector('.form-user-password');
+const signupForm = document.querySelector('#signup-form');
 if (leaflet) {
   const mapElement = leaflet;
   (0, _leaflet.displayMap)(mapElement);
@@ -13203,6 +13224,18 @@ if (logOutBtn) {
   logOutBtn.addEventListener('click', e => {
     e.preventDefault();
     (0, _login.logout)();
+  });
+}
+if (signupForm) {
+  signupForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const data = {
+      name: document.querySelector('#name').value,
+      email: document.querySelector('#email').value,
+      password: document.querySelector('#password').value,
+      passwordConfirm: document.querySelector('#passwordConfirm').value
+    };
+    (0, _login.signup)(data);
   });
 }
 if (formUser) {
@@ -13258,7 +13291,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51168" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53808" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
