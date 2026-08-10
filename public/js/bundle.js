@@ -8360,7 +8360,7 @@ exports.Axios = Axios;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.signup = exports.logout = exports.login = void 0;
+exports.signup = exports.resetPassword = exports.logout = exports.login = exports.forgotPassword = void 0;
 var _alert = require("./alert");
 var _axios = _interopRequireDefault(require("axios"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -8423,6 +8423,47 @@ const signup = async data => {
   }
 };
 exports.signup = signup;
+const forgotPassword = async email => {
+  try {
+    const res = await (0, _axios.default)({
+      method: 'POST',
+      url: '/api/v1/users/forgotPassword',
+      data: {
+        email
+      }
+    });
+    if (res.data.status === 'success') {
+      (0, _alert.showAlert)('success', 'Reset link sent! Check your email.');
+      document.querySelector('#forgot-password-form').reset();
+    }
+  } catch (err) {
+    var _err$response3;
+    (0, _alert.showAlert)('error', ((_err$response3 = err.response) === null || _err$response3 === void 0 || (_err$response3 = _err$response3.data) === null || _err$response3 === void 0 ? void 0 : _err$response3.message) || 'Something went wrong');
+  }
+};
+exports.forgotPassword = forgotPassword;
+const resetPassword = async (token, password, passwordConfirm) => {
+  try {
+    const res = await (0, _axios.default)({
+      method: 'PATCH',
+      url: "/api/v1/users/resetPassword/".concat(token),
+      data: {
+        password,
+        passwordConfirm
+      }
+    });
+    if (res.data.status === 'success') {
+      (0, _alert.showAlert)('success', 'Password reset successfully!');
+      setTimeout(() => {
+        window.location.assign('/assistant');
+      }, 1500);
+    }
+  } catch (err) {
+    var _err$response4;
+    (0, _alert.showAlert)('error', ((_err$response4 = err.response) === null || _err$response4 === void 0 || (_err$response4 = _err$response4.data) === null || _err$response4 === void 0 ? void 0 : _err$response4.message) || 'Something went wrong');
+  }
+};
+exports.resetPassword = resetPassword;
 },{"./alert":"alert.js","axios":"../../node_modules/axios/index.js"}],"updateSattings.js":[function(require,module,exports) {
 "use strict";
 
@@ -13208,6 +13249,8 @@ const logOutBtn = document.querySelector('.nav__el--logout');
 const formUser = document.querySelector('.form-user-data');
 const formPassword = document.querySelector('.form-user-password');
 const signupForm = document.querySelector('#signup-form');
+const forgotPasswordForm = document.querySelector('#forgot-password-form');
+const resetPasswordForm = document.querySelector('#reset-password-form');
 if (leaflet) {
   const mapElement = leaflet;
   (0, _leaflet.displayMap)(mapElement);
@@ -13236,6 +13279,22 @@ if (signupForm) {
       passwordConfirm: document.querySelector('#passwordConfirm').value
     };
     (0, _login.signup)(data);
+  });
+}
+if (forgotPasswordForm) {
+  forgotPasswordForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const email = document.querySelector('#forgot-password-form #email').value;
+    (0, _login.forgotPassword)(email);
+  });
+}
+if (resetPasswordForm) {
+  resetPasswordForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const token = document.querySelector('#reset-token').value;
+    const password = document.querySelector('#password').value;
+    const passwordConfirm = document.querySelector('#passwordConfirm').value;
+    (0, _login.resetPassword)(token, password, passwordConfirm);
   });
 }
 if (formUser) {
@@ -13291,7 +13350,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53808" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58393" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

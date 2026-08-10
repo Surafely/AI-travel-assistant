@@ -47,7 +47,6 @@ module.exports = class Email {
       html,
       text: htmlToText(html),
     };
-    // console.log(mailOptions.from);
     // 3) Send the email
     await this.newTransport().sendMail(mailOptions);
   }

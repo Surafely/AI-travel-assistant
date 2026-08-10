@@ -23,7 +23,6 @@ block content
           .form__group
             .form__password-row
               label.form__label(for='password') Password
-              a.form__forgot-link(href='/forgotPassword') Forgot password?
 
             input.form__input(
               id='password'
@@ -39,5 +38,10 @@ block content
               | Log in
 
         .auth__footer
+
           p New here?
           a(href='/signup') Create an account
+
+          .auth__footer.auth__footer-forgot
+            p Forgot your password?
+            a(href='/forgotPassword') Reset your password

@@ -2,7 +2,7 @@
 // const displayMap = require('./leaflet')
 import '@babel/polyfill';
 import { displayMap } from './leaflet';
-import { login, logout, signup } from './login';
+import { login, logout, signup, forgotPassword, resetPassword } from './login';
 import { updateSettings } from './updateSattings';
 import { initSidebar, initMobileSidebar } from './assistant/sidebar';
 import { initChatForm } from './assistant/chatForm';
@@ -24,6 +24,8 @@ const logOutBtn = document.querySelector('.nav__el--logout');
 const formUser = document.querySelector('.form-user-data');
 const formPassword = document.querySelector('.form-user-password');
 const signupForm = document.querySelector('#signup-form');
+const forgotPasswordForm = document.querySelector('#forgot-password-form');
+const resetPasswordForm = document.querySelector('#reset-password-form');
 
 if (leaflet) {
   const mapElement = leaflet;
@@ -58,6 +60,26 @@ if (signupForm) {
     };
 
     signup(data);
+  });
+}
+
+if (forgotPasswordForm) {
+  forgotPasswordForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const email = document.querySelector('#forgot-password-form #email').value;
+    forgotPassword(email);
+  });
+}
+
+if (resetPasswordForm) {
+  resetPasswordForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const token = document.querySelector('#reset-token').value;
+    const password = document.querySelector('#password').value;
+    const passwordConfirm = document.querySelector('#passwordConfirm').value;
+    resetPassword(token, password, passwordConfirm);
   });
 }
 
