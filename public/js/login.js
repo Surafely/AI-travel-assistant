@@ -59,7 +59,7 @@ export const signup = async (data) => {
       showAlert('success', 'Account created successfully!');
 
       setTimeout(() => {
-        window.location.href = '/assistant';
+        window.location.href = '/';
       }, 1500);
     }
   } catch (err) {
@@ -100,7 +100,7 @@ export const resetPassword = async (token, password, passwordConfirm) => {
     if (res.data.status === 'success') {
       showAlert('success', 'Password reset successfully!');
       setTimeout(() => {
-        window.location.assign('/assistant');
+        window.location.assign('/');
       }, 1500);
     }
   } catch (err) {

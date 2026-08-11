@@ -8414,7 +8414,7 @@ const signup = async data => {
     if (res.data.status === 'success') {
       (0, _alert.showAlert)('success', 'Account created successfully!');
       setTimeout(() => {
-        window.location.href = '/assistant';
+        window.location.href = '/';
       }, 1500);
     }
   } catch (err) {
@@ -8455,7 +8455,7 @@ const resetPassword = async (token, password, passwordConfirm) => {
     if (res.data.status === 'success') {
       (0, _alert.showAlert)('success', 'Password reset successfully!');
       setTimeout(() => {
-        window.location.assign('/assistant');
+        window.location.assign('/');
       }, 1500);
     }
   } catch (err) {
@@ -13350,7 +13350,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58393" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50928" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

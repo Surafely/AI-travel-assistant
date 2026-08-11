@@ -8,6 +8,8 @@ const helmet = require('helmet');
 const cookiesParser = require('cookie-parser');
 const globalErrorHsndler = require('./controllers/errorController');
 
+const compression = require('compression');
+
 const tripsRouter = require('./routes/tripRoutes');
 const usersRouter = require('./routes/userRoutes');
 const conversationRouter = require('./routes/conversationRoutes');
@@ -48,6 +50,8 @@ app.use(
     },
   }),
 );
+
+app.use(compression());
 
 //DEVELOPMENT LOGGING
 
