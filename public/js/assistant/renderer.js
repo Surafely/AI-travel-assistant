@@ -1,6 +1,6 @@
 import { state } from '../state/state';
 import { loadConversation } from './chat';
-import { loadConversations } from './sideBar';
+import { loadConversations } from './sidebar';
 import { deleteConversation } from '../api/conversationAPI';
 import { updateConversation } from '../api/conversationAPI';
 import { showToast } from '../toast';
