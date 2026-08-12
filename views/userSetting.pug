@@ -31,13 +31,13 @@ block content
           p.account-nav__label Account
           ul.account-nav__list
             +navItem('/me', 'Profile settings', '01', true)
-            +navItem('/bookmarks', 'Saved trips', '02', false)
+            +navItem('/', 'Saved trips', '02', false)
 
           if user.role === 'admin'
             p.account-nav__label Admin
             ul.account-nav__list
-              +navItem('/manage-trips', 'Manage trips', 'A1', false)
-              +navItem('/manage-users', 'Manage users', 'A2', false)
+              +navItem('/', 'Manage trips', 'A1', false)
+              +navItem('/', 'Manage users', 'A2', false)
 
       .user-view__content
         .settings-grid
