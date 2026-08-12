@@ -9,8 +9,6 @@ class APIFeatures {
         ? value[value.length - 1]
         : value;
     });
-
-    console.log('CLEAN QUERY:', this.queryString);
   }
 
   filter() {

@@ -21,7 +21,6 @@ const importData = async () => {
   try {
     await Trip.create(trips);
     await User.create(users, { validateBeforeSave: false });
-    console.log('Data successfully loaded !!!');
   } catch (err) {
     console.log(err);
   }
@@ -31,7 +30,6 @@ const deleteData = async () => {
   try {
     await Trip.deleteMany();
     await User.deleteMany();
-    console.log('Data successfully deleted !!!');
   } catch (err) {
     console.log(err);
   }
